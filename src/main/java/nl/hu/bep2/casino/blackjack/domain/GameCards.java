@@ -15,19 +15,20 @@ public class GameCards {
 		this.numberOfDecks = numberOfDecks;
 	}
 	
-	public void GameCards.initateDeck(int numberOfDecks) {
+	public void initiateDeck(int numberOfDecks) {
 		
 		this.numberOfDecks = numberOfDecks;
 		int loop =numberOfDecks;
 		Kleur kleuren[] = Kleur.values();
 		Waarde waarden[] = Waarde.values();
 		List<Card> cards = null;
+		Card card = null;
 		
 		while (loop > 0) {
 			int i=0;
 			for(Kleur kleur: kleuren) {
 				for( Waarde waarde: waarden) {
-					Card card = new Card(kleur,waarde);
+					card = new Card( kleur, waarde);
 					cards.add(card);
 					i++;
 				}
@@ -36,6 +37,7 @@ public class GameCards {
 		}
 		Collections.shuffle(cards);
 		this.gameCards = cards;
+		System.out.println(" hoi hoi");
 	}
 
 	
