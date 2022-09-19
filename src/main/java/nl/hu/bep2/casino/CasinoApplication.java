@@ -10,7 +10,7 @@ public class CasinoApplication {
     public static void main(String[] args) {
         SpringApplication.run(CasinoApplication.class, args);
         
-        GameCards playdeck = new  GameCards(1);
+        GameCards playdeck = new GameCards(1);
         playdeck.initiateDeck(1);
     }
     

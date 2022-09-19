@@ -15,13 +15,13 @@ public class GameCards {
 		this.numberOfDecks = numberOfDecks;
 	}
 	
-	public void initiateDeck(int numberOfDecks) {
+	public  void initiateDeck(int numberOfDecks) {
 		
 		this.numberOfDecks = numberOfDecks;
 		int loop =numberOfDecks;
 		Kleur kleuren[] = Kleur.values();
 		Waarde waarden[] = Waarde.values();
-		List<Card> cards = null;
+		List<Card> cards = new List<Card>(
 		Card card = null;
 		
 		while (loop > 0) {
