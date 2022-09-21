@@ -1,15 +1,15 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+
 
 public class GameCards {
 
 	private int numberOfDecks;
 	private List<Card> gameCards = null;
-
-
-	
 	
 	public GameCards(int numberOfDecks) {
 		this.numberOfDecks = numberOfDecks;
@@ -21,14 +21,15 @@ public class GameCards {
 		int loop =numberOfDecks;
 		Kleur kleuren[] = Kleur.values();
 		Waarde waarden[] = Waarde.values();
-		List<Card> cards = new List<Card>(
-		Card card = null;
+		List<Card> cards = new ArrayList<Card> ();
+		
+
 		
 		while (loop > 0) {
 			int i=0;
 			for(Kleur kleur: kleuren) {
 				for( Waarde waarde: waarden) {
-					card = new Card( kleur, waarde);
+					Card card = new Card(kleur, waarde);
 					cards.add(card);
 					i++;
 				}
@@ -37,7 +38,11 @@ public class GameCards {
 		}
 		Collections.shuffle(cards);
 		this.gameCards = cards;
-		System.out.println(" hoi hoi");
+		
+	}
+	
+	public List<Card> getGameCards(){
+		return this.gameCards;
 	}
 
 	

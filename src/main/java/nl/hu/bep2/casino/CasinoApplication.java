@@ -9,9 +9,5 @@ import nl.hu.bep2.casino.blackjack.domain.GameCards;
 public class CasinoApplication {
     public static void main(String[] args) {
         SpringApplication.run(CasinoApplication.class, args);
-        
-        GameCards playdeck = new GameCards(1);
-        playdeck.initiateDeck(1);
     }
-    
 }
