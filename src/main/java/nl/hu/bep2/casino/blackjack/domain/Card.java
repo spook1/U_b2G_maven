@@ -1,6 +1,9 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
-public class Card {
+import java.io.Serializable;
+
+@Entity
+public class Card implements Serializable {
 	private Kleur kleur;
 	private Waarde waarde;
 	
@@ -12,6 +15,7 @@ public class Card {
 		// TODO Auto-generated constructor stub
 	}
 
+	
 
 	@Override
 	public String toString() {
