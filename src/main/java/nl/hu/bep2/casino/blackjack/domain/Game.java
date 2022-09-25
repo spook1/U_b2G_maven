@@ -13,13 +13,13 @@ public class Game {
 	private Move current_move;
 	private Move last_move;
 	
-	//GAME WORDT AANGEMAAKT NA EERSTE BET, DE SPELER N DE DEALER KRIJGEN DAN METEEN TWEE KAARTEN
+	//GAME WORDT AANGEMAAKT NA EERSTE BET, DE SPELER N DE DEALER KRIJGEN DAN METEEN TWEE KAARTEN. Dan is het spel op de wagen dus is de gamestate ook meteen playing.
 	public Game(Player player, int numberOfDecks, long bet) {
 		
 		this.numberOfDecks = numberOfDecks;
 		this.player = player;
 		this.gameCards = new GameCards(numberOfDecks);
-		this.gameState = GameState.waiting;
+		this.gameState = GameState.playing;
 		this.dealer = new Dealer();
 		
 		this.player.addCardToHand(gameCards.getCard());

@@ -25,9 +25,8 @@ public class BlackjackService {
 		Map<Player,Card> map = new HashMap<>();
 		Card openDealerCard= game.getDealer().getFirstDealerCard();
 		
-		map.put(player, game.getFirstDealerCard())
-		
-		return player;
+		map.put(player, openDealerCard);		
+		return map;
 	}
 
 }
