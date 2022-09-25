@@ -24,7 +24,7 @@ public class TestController {
 	//public ArrayList<Card> gameDeck() {
 	public Map<int[],Hand> testMethode() {
 	
-		Hand playerHand = new Hand(1);
+		Hand playerHand = new Hand();
 		GameCards gameCards = new GameCards(numDecks);
 		
 		int[] score = new int[2];

@@ -1,5 +1,8 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
-public class Move {
-
+public enum Move {
+hit,
+stand,
+doubleDown,
+surrender
 }

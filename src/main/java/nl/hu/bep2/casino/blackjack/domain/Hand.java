@@ -5,18 +5,19 @@ import java.util.List;
 
 public class Hand {
 	
-	private int owner=0;
+
+	public Hand() {
+		super();
+		handScore[0]=0;
+		handScore[1]=0;
+	}
+
 	private List<Card> kaartenOpHand = new ArrayList<Card>();
 	private int[] handScore = new int[2];
 	
 	
 	
-	public Hand(int owner) {
 
-		this.owner = owner;
-		handScore[0]=0;
-		handScore[1]=0;
-	}
 	
 
 		// berekent de score van de hand, twee waarden , één maal met aas =1 en eenmaal met aas =11, vaak zijn de waarden identiek, behalve als er een aas op hand is.
@@ -63,13 +64,6 @@ public class Hand {
 	  }
 	 
 
-	public int getOwner() {
-		return owner;
-	}
-
-	public void setOwner(int owner) {
-		this.owner = owner;
-	}
 	
 	public  boolean addCardToHand(Card card) {
 		this.kaartenOpHand.add(card);
@@ -80,9 +74,7 @@ public class Hand {
 		return kaartenOpHand;
 	}
 
-	public void setKaartenOpHand(List<Card> kaartenOpHand) {
-		this.kaartenOpHand = kaartenOpHand;
-	}
+	
 
 
 	
