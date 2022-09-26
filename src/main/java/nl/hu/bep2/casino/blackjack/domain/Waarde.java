@@ -13,6 +13,7 @@ public enum Waarde {
  boer,
  vrouw,
  heer,
- aas
+ aas,
+ achterkant
 
 }

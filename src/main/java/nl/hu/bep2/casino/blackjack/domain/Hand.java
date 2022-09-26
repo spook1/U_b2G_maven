@@ -15,12 +15,16 @@ public class Hand {
 	private List<Card> kaartenOpHand = new ArrayList<Card>();
 	private int[] handScore = new int[2];
 	
-	
+	public List<Card> getAllHandCards () {
+		
+		return this.getKaartenOpHand();
+	}
 	
 
 	
 
 		// berekent de score van de hand, twee waarden , één maal met aas =1 en eenmaal met aas =11, vaak zijn de waarden identiek, behalve als er een aas op hand is.
+	   // eerste getal van de array geeft waarde waarin aas als 11 meetelt
 	  public int[] getHandScore() { 
 		  
 	  Card card = null; 

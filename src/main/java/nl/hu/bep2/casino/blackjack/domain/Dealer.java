@@ -13,10 +13,7 @@ public class Dealer extends Hand{
 		return firstDealerCard;
 	}
 	
-	public List<Card> getAllDealerCards () {
-		
-		return this.getKaartenOpHand();
-	}
+
 
 
 }

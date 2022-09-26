@@ -22,7 +22,7 @@ public class TestController {
 
 	@GetMapping("/test")
 	//public ArrayList<Card> gameDeck() {
-	public Map<int[],Hand> testMethode() {
+	public Map<int[],Hand> testGameCards() {
 	
 		Hand playerHand = new Hand();
 		GameCards gameCards = new GameCards(numDecks);
@@ -41,7 +41,6 @@ public class TestController {
 		return map;
 		//	return gameCards.getCard();
 			
-
 	}
 }
 

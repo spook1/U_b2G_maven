@@ -5,6 +5,7 @@ public enum Kleur {
 	schoppen,
 	harten,
 	ruiten,
-	klaver
+	klaver,
+	achterkant
 
 }
