@@ -1,13 +1,13 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+
+
 import java.util.Arrays;
 
 import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.security.domain.User;
 
 public class Player extends Hand{
-	
-
 
 	private Chips chips;
 	private String playerName;
@@ -52,13 +52,16 @@ public class Player extends Hand{
 	public void setPlayerName(String playerName) {
 		this.playerName = playerName;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Player [chips=" + chips + ", playerName=" + playerName + ", getChips()=" + getChips()
-				+ ", getPlayerName()=" + getPlayerName() + ", getHandScore()=" + Arrays.toString(getHandScore())
-				+ ", getKaartenOpHand()=" + getKaartenOpHand() + ", getClass()=" + getClass() + ", hashCode()="
-				+ hashCode() + ", toString()=" + super.toString() + "]";
+				+ ", getPlayerName()=" + getPlayerName() + ", getAllHandCards()=" + getAllHandCards()
+				+ ", getHandScore()=" + Arrays.toString(getHandScore()) + ", getKaartenOpHand()=" + getKaartenOpHand()
+				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
+				+ "]";
 	}
+	
+	
 	
 }

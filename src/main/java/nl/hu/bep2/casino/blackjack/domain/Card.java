@@ -1,8 +1,6 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
-import java.io.Serializable;
 
-@Entity
 public class Card {
 	private Kleur kleur;
 	private Waarde waarde;

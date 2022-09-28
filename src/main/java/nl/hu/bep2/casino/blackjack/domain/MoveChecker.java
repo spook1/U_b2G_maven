@@ -1,5 +1,6 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoveChecker {
@@ -40,7 +41,7 @@ public class MoveChecker {
 	}
 	
 	public List<Move> showMoves(Game game) {
-		List<Move> moveOptions = new List<Move>;
+		List<Move> moveOptions = new ArrayList<>();
 		switch(game.getGameState()) {
 		case waiting:
 			moveOptions.add(Move.bet);
