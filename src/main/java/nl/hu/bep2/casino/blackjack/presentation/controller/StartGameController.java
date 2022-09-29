@@ -1,43 +1,45 @@
-package nl.hu.bep.casino.blackjack.presentation.controller;
+package nl.hu.bep2.casino.blackjack.presentation.controller;
 
-import java.util.Map;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import nl.hu.bep2.casino.blackjack.application.BlackjackService;
-import nl.hu.bep2.casino.blackjack.domain.Card;
-import nl.hu.bep2.casino.blackjack.domain.Player;
-import nl.hu.bep2.casino.chips.application.Balance;
+import nl.hu.bep2.casino.blackjack.application.StartGameService;
+import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfoDto;
+
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
-import nl.hu.bep2.casino.chips.presentation.dto.Deposit;
+
 import nl.hu.bep2.casino.security.domain.UserProfile;
 
 @RestController
 @RequestMapping("/game")
-public class BlackjackController {
-	private final BlackjackService service;
+public class StartGameController {
+	private final StartGameService service;
 	
-	public BlackjackController(BlackjackService service) {
+	public StartGameController(StartGameService service) {
 		this.service =service;
 	}
 	
 	@PostMapping("/start")
-	public  Map<Player,Card[]> startGame(Authentication authentication, @Validated @RequestBody GameInfo gameInfo){
+	public List<Object> startGame(Authentication authentication, @Validated @RequestBody GameInfoDto gameInfoDto){
 		 UserProfile profile = (UserProfile) authentication.getPrincipal();
 		 try {
-	            Game game = this.service.depositChips(profile.getUsername(), deposit.amount);
-	            return balance;
+			 	List<Object> gameInfo = new ArrayList<>();
+			 	
+			 	gameInfo = this.service.start(profile.getUsername(), gameInfoDto.numberOfDecks,gameInfoDto.amount);
+	            return gameInfo;
 	        } catch (NegativeNumberException exception) {
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
 	        }
 	}
 	
-	this.service (String playerName,int numberOfDecks, long amount)
-
 }
