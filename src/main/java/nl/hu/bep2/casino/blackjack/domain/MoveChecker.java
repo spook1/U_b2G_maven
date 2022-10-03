@@ -40,9 +40,9 @@ public class MoveChecker {
 		return gameState;
 	}
 	
-	public List<Move> showMoves(Game game) {
+	public static List<Move> showMoves(GameState gameState) {
 		List<Move> moveOptions = new ArrayList<>();
-		switch(game.getGameState()) {
+		switch(gameState) {
 		case waiting:
 			moveOptions.add(Move.bet);
 		break;

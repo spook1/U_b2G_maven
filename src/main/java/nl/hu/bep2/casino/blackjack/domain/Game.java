@@ -5,20 +5,24 @@ import nl.hu.bep2.casino.security.domain.User;
 
 public class Game {
 	
+	
 	private GameCards gameCards;
 	private GameState gameState;
 	private Player player;
 	private Dealer dealer= new Dealer();
-	private boolean firstBet = false;
-	private int numberOfDecks=1;
 	private Move current_move;
 	private Move last_move;
 	
 	//GAME WORDT AANGEMAAKT BIJ EERSTE BET, DE SPELER N DE DEALER KRIJGEN DAN METEEN TWEE KAARTEN. Dan is het spel op de wagen dus is de gamestate ook meteen playing.
 	// speler plaatst bet, en betaalt ook meteen de bet.
+	
+	public Game() {
+		
+	}
+	
 	public Game(Player player, int numberOfDecks) {
 		
-		this.numberOfDecks = numberOfDecks;
+		
 		this.player = player;
 		this.gameCards = new GameCards(numberOfDecks);
 		this.gameState = GameState.waiting;
@@ -71,6 +75,7 @@ public class Game {
 	public GameState getGameState() {
 		return this.gameState;
 	}
+	
 	
 
 	
