@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -14,11 +15,14 @@ import nl.hu.bep2.casino.blackjack.domain.Move;
 import nl.hu.bep2.casino.blackjack.domain.MoveChecker;
 import nl.hu.bep2.casino.blackjack.domain.Player;
 import nl.hu.bep2.casino.blackjack.domain.Waarde;
+import nl.hu.bep2.casino.chips.data.ChipsRepository;
+import nl.hu.bep2.casino.chips.domain.Chips;
 
 @Service
 public class BlackJackService {
 	
-		Game game = new Game();
+		private Game game;
+		private ChipsRepository chipsRepository;
 		
 		//USER BEDENKT SPELERSNAAM, GEEFT AAN MET HOEVEEL DECKS ZE WIL SPELEN EN DOET EEN EERSTE INZET
 		//ER WORDT DAN SPELER-INSTANTIE AANGEMAAKT, DIE 1OO CHIPS KRIJGT ALS START EN ER WORDT EEN GAME AANGEMAAKT, MET AUTOMATISCH EEN SET GAMECARDS EN EEN DEALERHAND
@@ -32,7 +36,9 @@ public class BlackJackService {
 		
 		public List<Object> start(String playerName,int numberOfDecks, long amount){
 
-			Player player = new Player(playerName);
+			
+			Chips chips = chipsRepository.findByUsername(playerName).orElse(null);
+			Player player = new Player(playerName, chips);
 			this.game= new Game(player, numberOfDecks);
 			List<Object> gameInfo = new ArrayList<>();
 			

@@ -1,17 +1,29 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import org.springframework.data.annotation.Id;
+
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.security.domain.User;
 
+@Entity
 public class Game {
 	
-	
+    @Id
+    @GeneratedValue
+	private long id;
+    @OneToOne
 	private GameCards gameCards;
 	private GameState gameState;
+    @ManyToOne
 	private Player player;
+    @OneToOne
 	private Dealer dealer= new Dealer();
 	private Move current_move;
-	private Move last_move;
+
 	
 	//GAME WORDT AANGEMAAKT BIJ EERSTE BET, DE SPELER N DE DEALER KRIJGEN DAN METEEN TWEE KAARTEN. Dan is het spel op de wagen dus is de gamestate ook meteen playing.
 	// speler plaatst bet, en betaalt ook meteen de bet.
@@ -62,7 +74,6 @@ public class Game {
 	
 	public Move selectMove(Move move) {
 		
-		this.last_move = this.current_move;
 		this.current_move = move;
 		
 		return move;

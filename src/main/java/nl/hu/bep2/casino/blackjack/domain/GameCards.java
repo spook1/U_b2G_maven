@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
 public class GameCards {
 
+    @Id
+    @GeneratedValue
+	private long id;
 	private int numberOfDecks;
 	private List<Card> gameCards;
 	

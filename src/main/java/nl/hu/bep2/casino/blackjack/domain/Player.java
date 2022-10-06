@@ -4,21 +4,31 @@ package nl.hu.bep2.casino.blackjack.domain;
 
 import java.util.Arrays;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.LazyToOne;
+
 import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.security.domain.User;
 
-public class Player extends Hand{
+@Entity
+public class Player extends Hand {
 
-	private Chips chips;
+	@Id
+	@GeneratedValue
+	private long id;
+	private User user;
+	
+	private Chips chips;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips.dit private obejct wordt gevuld met de chipsvan de user
 	private String playerName;
 
-	
 
-	public Player(String playerName) {
+	public Player(String playerName, Chips chips) {
 		super();
 		this.playerName = playerName;
-		long startChips = 100;
-		this.chips = new Chips(this.playerName, startChips);
+		this.chips = chips;
+		
 
 	}
 	

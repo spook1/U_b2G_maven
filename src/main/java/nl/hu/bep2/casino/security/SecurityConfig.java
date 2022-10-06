@@ -2,6 +2,9 @@ package nl.hu.bep2.casino.security;
 
 import nl.hu.bep2.casino.security.presentation.filter.JwtAuthenticationFilter;
 import nl.hu.bep2.casino.security.presentation.filter.JwtAuthorizationFilter;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -31,7 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public final static String LOGIN_PATH = "/login";
+    public final static String LOGIN_PATH = "http://localhost/login";
     public final static String REGISTER_PATH = "/register";
 
     @Value("${security.jwt.secret}")
@@ -42,8 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and()
-                .csrf().disable()
+    	 http.cors().and()
+    	 		.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, REGISTER_PATH).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_PATH).permitAll()
