@@ -22,6 +22,7 @@ import nl.hu.bep2.casino.chips.domain.Chips;
 public class BlackJackService {
 	
 		private Game game;
+		
 		private ChipsRepository chipsRepository;
 		
 		//USER BEDENKT SPELERSNAAM, GEEFT AAN MET HOEVEEL DECKS ZE WIL SPELEN EN DOET EEN EERSTE INZET
@@ -37,7 +38,7 @@ public class BlackJackService {
 		public List<Object> start(String playerName,int numberOfDecks, long amount){
 
 			
-			Chips chips = chipsRepository.findByUsername(playerName).orElse(null);
+			Chips chips = chipsRepository.findByUsername("admin").orElse(null);
 			Player player = new Player(playerName, chips);
 			this.game= new Game(player, numberOfDecks);
 			List<Object> gameInfo = new ArrayList<>();

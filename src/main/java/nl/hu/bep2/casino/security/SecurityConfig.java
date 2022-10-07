@@ -34,7 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    public final static String LOGIN_PATH = "http://localhost/login";
+    public final static String LOGIN_PATH = "/login";
     public final static String REGISTER_PATH = "/register";
 
     @Value("${security.jwt.secret}")
