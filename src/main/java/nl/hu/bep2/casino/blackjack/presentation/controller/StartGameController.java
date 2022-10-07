@@ -28,11 +28,8 @@ public class StartGameController {
 	public StartGameController(BlackJackService service) {
 		this.service =service;
 	}
-	
-	
 																			// endpoint start start methode startGame en haalt van endpointDto (string, int, long) op 
-																			// die weer service.start inschakelt en met de Dto waarden aan het werk zet
-															
+																			// die weer service.start inschakelt en met de Dto waarden aan het werk zet														
 	@PostMapping("/start")
 	public List<Object> startGame(Authentication authentication, @Validated @RequestBody GameInfoDto gameInfoDto){
 		 UserProfile profile = (UserProfile) authentication.getPrincipal();

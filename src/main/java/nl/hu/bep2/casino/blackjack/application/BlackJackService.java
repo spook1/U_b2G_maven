@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import nl.hu.bep2.casino.blackjack.data.GameRepository;
 import nl.hu.bep2.casino.blackjack.domain.Card;
 import nl.hu.bep2.casino.blackjack.domain.Game;
 import nl.hu.bep2.casino.blackjack.domain.GameState;
@@ -16,15 +17,19 @@ import nl.hu.bep2.casino.blackjack.domain.Move;
 import nl.hu.bep2.casino.blackjack.domain.MoveChecker;
 import nl.hu.bep2.casino.blackjack.domain.Player;
 import nl.hu.bep2.casino.blackjack.domain.Waarde;
+import nl.hu.bep2.casino.chips.application.ChipsService;
 import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
 
 @Service
 public class BlackJackService {
 	
-		private Game game;
+		@Autowired
+		private GameRepository gameRepository;
 		@Autowired
 		private ChipsRepository chipsRepository;
+		@Autowired
+		private ChipsService chipsService;
 		
 		//USER BEDENKT SPELERSNAAM, GEEFT AAN MET HOEVEEL DECKS ZE WIL SPELEN EN DOET EEN EERSTE INZET
 		//ER WORDT DAN SPELER-INSTANTIE AANGEMAAKT, DIE 1OO CHIPS KRIJGT ALS START EN ER WORDT EEN GAME AANGEMAAKT, MET AUTOMATISCH EEN SET GAMECARDS EN EEN DEALERHAND
@@ -41,13 +46,17 @@ public class BlackJackService {
 		
 			Chips chips = chipsRepository.findByUsername(playerName).orElse(null);
 			Player player = new Player(playerName, chips);
-			this.game= new Game(player, numberOfDecks);
+			Game game= new Game(player, numberOfDecks);
 			List<Object> gameInfo = new ArrayList<>();
 			
 			// gamestart plaatst bet ter hoogte van amount en rekent resultaat uit mvb van MoveChecker, past player aan ( hand en chips)
-			this.game.start(amount) ;
+			game.start(amount) ;
 				
-					
+			
+// EVEN UITYGEZET, NU DOET IE HET HET MIN OF MEER IN pSOTMAN  DE BET VAN 10 CHIPS WORDT OOK NIET VERWERKT IN CHIPSTABEL, MAAR DAAR GEEN FOUTMELDING			
+	    //    this.gameRepository.save(game);
+	        this.chipsService.depositChips(playerName, amount);		
+	        
 			//Map<Player,Card[]> map = new HashMap<>();
 			Card openDealerCard= game.getDealer().getFirstDealerCard();
 			Card holeDealerCard = new Card(Kleur.achterkant, Waarde.achterkant);
