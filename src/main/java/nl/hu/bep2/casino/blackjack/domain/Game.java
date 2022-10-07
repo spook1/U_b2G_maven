@@ -1,10 +1,15 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
-import org.springframework.data.annotation.Id;
+//import org.springframework.data.annotation.Id;
 
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.security.domain.User;
@@ -12,16 +17,19 @@ import nl.hu.bep2.casino.security.domain.User;
 @Entity
 public class Game {
 	
-    @Id
+ 
+	@Id
     @GeneratedValue
 	private long id;
-    @OneToOne
+    @OneToOne(mappedBy="gameCards_id", cascade = CascadeType.ALL)
 	private GameCards gameCards;
+    @Enumerated(EnumType.STRING)
 	private GameState gameState;
-    @ManyToOne
+    @JoinColumn(name="player_id")
+	@OneToOne(mappedBy="player_id", cascade=CascadeType.ALL)
 	private Player player;
-    @OneToOne
-	private Dealer dealer= new Dealer();
+    @OneToOne(mappedBy="dealer_id", cascade = CascadeType.ALL)
+	private Dealer dealer;
 	private Move current_move;
 
 	
@@ -39,6 +47,7 @@ public class Game {
 		this.gameCards = new GameCards(numberOfDecks);
 		this.gameState = GameState.waiting;
 		this.dealer = new Dealer();
+	
 				
 	}
 	
@@ -87,7 +96,15 @@ public class Game {
 		return this.gameState;
 	}
 	
-	
+	   public long getId() {
+			return id;
+		}
+
+		public void setId(long id) {
+			this.id = id;
+		}
+		
+		
 
 	
 	

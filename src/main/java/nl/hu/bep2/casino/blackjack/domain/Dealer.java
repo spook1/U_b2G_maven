@@ -1,12 +1,25 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.List;
+
+import javax.persistence.GeneratedValue;
+
+
 
 @Entity
 public class Dealer extends Hand{
-	 @Id
-	 @GeneratedValue
+	
+	@Id
+	@GeneratedValue
 	private long id;
+	@OneToOne(fetch=FetchType.LAZY)
+	private Game game;
+	
 	public Dealer () {
 		super();
 	}

@@ -4,8 +4,10 @@ package nl.hu.bep2.casino.blackjack.domain;
 
 import java.util.Arrays;
 
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.LazyToOne;
 
@@ -18,9 +20,12 @@ public class Player extends Hand {
 	@Id
 	@GeneratedValue
 	private long id;
+	@OneToOne(fetch=FetchType.LAZY)
+	private Game game;
 	private User user;
 	
-	private Chips chips;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips.dit private obejct wordt gevuld met de chipsvan de user
+	private Chips chips;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips. dit private obejct wordt in de applicatielaag gevuld met de chips van de user
+							//dependency injection van chips in player in apllicatielag, blackjackservice, startgame
 	private String playerName;
 
 
@@ -34,8 +39,8 @@ public class Player extends Hand {
 	
 	public boolean depositChips(long amount) {
 		
-			chips.deposit(amount);
-			return true;
+		chips.deposit(amount);
+		return true;
 	}
 	
 	public boolean withdrawChips(long amount) {
