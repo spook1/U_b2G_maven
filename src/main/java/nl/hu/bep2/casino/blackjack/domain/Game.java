@@ -1,5 +1,7 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.CascadeType;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -16,7 +18,7 @@ import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.security.domain.User;
 
 @Entity
-public class Game {
+public class Game implements Serializable{
 	
  
 	@Id
@@ -27,13 +29,16 @@ public class Game {
     @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
 	@Lob
 	private GameCards gameCards;
+    
     @Enumerated(EnumType.STRING)
 	private GameState gameState;
   
 	@OneToOne(mappedBy="game", cascade = CascadeType.ALL)  //MAG JE IN DIT GEVAL MAPPED BY WEGLATEN OMDAT DAT VOOR ZOCH SPREEKT?
 	private Player player;
+	
     @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
 	private Dealer dealer;
+    
 	private Move current_move;
 
 	

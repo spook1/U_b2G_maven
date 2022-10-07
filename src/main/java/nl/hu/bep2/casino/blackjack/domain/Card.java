@@ -1,11 +1,12 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import java.io.Serializable;
 
-public class Card {
+public class Card implements Serializable  {
 	private Kleur kleur;
 	private Waarde waarde;
 	
-
+	@Entity
 	public Card(Kleur kleur, Waarde waarde) {
 		
 		this.kleur = kleur;

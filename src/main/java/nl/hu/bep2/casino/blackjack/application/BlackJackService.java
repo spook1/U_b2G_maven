@@ -54,8 +54,7 @@ public class BlackJackService {
 				
 			
 // EVEN UITYGEZET, NU DOET IE HET HET MIN OF MEER IN pSOTMAN  DE BET VAN 10 CHIPS WORDT OOK NIET VERWERKT IN CHIPSTABEL, MAAR DAAR GEEN FOUTMELDING			
-	    //    this.gameRepository.save(game);
-	        this.chipsService.depositChips(playerName, amount);		
+	
 	        
 			//Map<Player,Card[]> map = new HashMap<>();
 			Card openDealerCard= game.getDealer().getFirstDealerCard();
@@ -70,9 +69,8 @@ public class BlackJackService {
 			gameInfo.add(game);
 			
 			
-			//SAVE GAME
-			Map<String, Game> gameMap = new HashMap<>();
-			gameMap.put(playerName,  game);
+	        this.gameRepository.save(game);
+	        this.chipsService.depositChips(playerName, amount);		
 			
 			return gameInfo;
 		}
