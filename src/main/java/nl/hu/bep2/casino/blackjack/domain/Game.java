@@ -5,6 +5,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,14 +22,17 @@ public class Game {
 	@Id
     @GeneratedValue
 	private long id;
-    @OneToOne(mappedBy="gameCards_id", cascade = CascadeType.ALL)
+	
+	 
+    @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
+	@Lob
 	private GameCards gameCards;
     @Enumerated(EnumType.STRING)
 	private GameState gameState;
-    @JoinColumn(name="player_id")
-	@OneToOne(mappedBy="player_id", cascade=CascadeType.ALL)
+  
+	@OneToOne(mappedBy="game", cascade = CascadeType.ALL)  //MAG JE IN DIT GEVAL MAPPED BY WEGLATEN OMDAT DAT VOOR ZOCH SPREEKT?
 	private Player player;
-    @OneToOne(mappedBy="dealer_id", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
 	private Dealer dealer;
 	private Move current_move;
 

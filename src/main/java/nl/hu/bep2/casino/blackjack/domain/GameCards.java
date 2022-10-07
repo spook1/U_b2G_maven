@@ -1,21 +1,31 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToOne;
+import javax.persistence.FetchType;
+import javax.persistence.Entity;
+
+
 
 @Entity
-public class GameCards {
+public class GameCards implements Serializable {
 
     @Id
     @GeneratedValue
 	private long id;
 	private int numberOfDecks;
+	@Lob
 	private List<Card> gameCards;
-	
+	@OneToOne(fetch=FetchType.LAZY)
+	private Game game;
+
 	public GameCards(int numberOfDecks) {
 		this.numberOfDecks = numberOfDecks;
 		

@@ -7,7 +7,11 @@ import java.util.Arrays;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+import javax.persistence.Entity;
+
 
 import org.hibernate.annotations.LazyToOne;
 
@@ -21,9 +25,10 @@ public class Player extends Hand {
 	@GeneratedValue
 	private long id;
 	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="game_id")
 	private Game game;
-	private User user;
-	
+
+	@Lob
 	private Chips chips;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips. dit private obejct wordt in de applicatielaag gevuld met de chips van de user
 							//dependency injection van chips in player in apllicatielag, blackjackservice, startgame
 	private String playerName;
