@@ -9,15 +9,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Entity;
 
 
 import org.hibernate.annotations.LazyToOne;
+import org.springframework.transaction.annotation.Transactional;
 
 import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.security.domain.User;
 
+@Transactional
 @Entity
 public class Player extends Hand {
 
@@ -28,58 +31,37 @@ public class Player extends Hand {
 	@JoinColumn(name="game_id")
 	private Game game;
 
-	@Lob
-	private Chips chips;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips. dit private obejct wordt in de applicatielaag gevuld met de chips van de user
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User user;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips. dit private obejct wordt in de applicatielaag gevuld met de chips van de user
 							//dependency injection van chips in player in apllicatielag, blackjackservice, startgame
-	private String playerName;
 
-
-	public Player(String playerName, Chips chips) {
+	public Player(User user) {
 		super();
-		this.playerName = playerName;
-		this.chips = chips;
-		
-
-	}
-	
-	public boolean depositChips(long amount) {
-		
-		chips.deposit(amount);
-		return true;
-	}
-	
-	public boolean withdrawChips(long amount) {
-		
-		chips.withdraw(amount);
-		return true;
+		this.user = user;
 	}
 
-
-	public Chips getChips() {
-		return chips;
+	public long getId() {
+		return id;
 	}
 
-
-	public void setChips(Chips chips) {
-		this.chips = chips;
+	public void setId(long id) {
+		this.id = id;
 	}
 
-	public String getPlayerName() {
-		return playerName;
+	public Game getGame() {
+		return game;
 	}
 
-
-	public void setPlayerName(String playerName) {
-		this.playerName = playerName;
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
-	@Override
-	public String toString() {
-		return "Player [chips=" + chips + ", playerName=" + playerName + ", getChips()=" + getChips()
-				+ ", getPlayerName()=" + getPlayerName() + ", getAllHandCards()=" + getAllHandCards()
-				+ ", getHandScore()=" + Arrays.toString(getHandScore()) + ", getKaartenOpHand()=" + getKaartenOpHand()
-				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
-				+ "]";
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

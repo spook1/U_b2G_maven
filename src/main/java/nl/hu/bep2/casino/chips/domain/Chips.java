@@ -2,6 +2,9 @@ package nl.hu.bep2.casino.chips.domain;
 
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.chips.domain.exception.NotEnoughChipsException;
+import nl.hu.bep2.casino.security.data.UserRepository;
+import nl.hu.bep2.casino.security.domain.User;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +17,10 @@ public class Chips {
     @GeneratedValue
     private Long id;
 
-    private String username;
+    @OneToOne
+    @JoinColumn(name= "username")
+    private User user;
+  //  private String username;
 
     private Long amount;
 
@@ -25,12 +31,14 @@ public class Chips {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
+    
+    private UserRepository userRepository;
 
     public Chips() {
     }
 
     public Chips(String username, Long amount) {
-        this.username = username;
+        this.user = userRepository.findByUsername(username).orElse(null);
         this.amount = amount;
     }
 
@@ -63,7 +71,7 @@ public class Chips {
     }
 
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     public Long getAmount() {

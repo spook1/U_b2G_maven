@@ -20,6 +20,8 @@ import nl.hu.bep2.casino.blackjack.domain.Waarde;
 import nl.hu.bep2.casino.chips.application.ChipsService;
 import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
+import nl.hu.bep2.casino.security.data.UserRepository;
+import nl.hu.bep2.casino.security.domain.User;
 
 @Service
 public class BlackJackService {
@@ -30,6 +32,8 @@ public class BlackJackService {
 		private ChipsRepository chipsRepository;
 		@Autowired
 		private ChipsService chipsService;
+		@Autowired
+		private UserRepository userRepository;
 		
 		//USER BEDENKT SPELERSNAAM, GEEFT AAN MET HOEVEEL DECKS ZE WIL SPELEN EN DOET EEN EERSTE INZET
 		//ER WORDT DAN SPELER-INSTANTIE AANGEMAAKT, DIE 1OO CHIPS KRIJGT ALS START EN ER WORDT EEN GAME AANGEMAAKT, MET AUTOMATISCH EEN SET GAMECARDS EN EEN DEALERHAND
@@ -41,11 +45,13 @@ public class BlackJackService {
 			
 		}
 		
-		public List<Object> start(String playerName,int numberOfDecks, long amount){
+		public List<Object> start(String username,int numberOfDecks, long amount){
 
 		
-			Chips chips = chipsRepository.findByUsername(playerName).orElse(null);
-			Player player = new Player(playerName, chips);
+			Chips chips = chipsRepository.findByUsername(username).orElse(null);
+			User user = userRepository.findByUsername(username).orElse(null);
+			
+			Player player = new Player(user);
 			Game game= new Game(player, numberOfDecks);
 			List<Object> gameInfo = new ArrayList<>();
 			
@@ -70,7 +76,7 @@ public class BlackJackService {
 			
 			
 	        this.gameRepository.save(game);
-	        this.chipsService.depositChips(playerName, amount);		
+	        this.chipsService.depositChips(user.getUsername(), amount);		
 			
 			return gameInfo;
 		}

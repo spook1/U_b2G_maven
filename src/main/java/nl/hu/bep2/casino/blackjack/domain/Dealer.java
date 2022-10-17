@@ -4,12 +4,15 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 import javax.persistence.GeneratedValue;
 
 
-
+@Transactional
 @Entity
 public class Dealer extends Hand{
 	

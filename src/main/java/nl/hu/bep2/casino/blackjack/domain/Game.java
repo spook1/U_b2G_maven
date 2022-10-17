@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -17,17 +20,15 @@ import javax.persistence.Id;
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 import nl.hu.bep2.casino.security.domain.User;
 
+@Transactional
 @Entity
 public class Game implements Serializable{
 	
- 
 	@Id
     @GeneratedValue
 	private long id;
-	
 	 
-    @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
-	@Lob
+    @Lob
 	private GameCards gameCards;
     
     @Enumerated(EnumType.STRING)
@@ -64,7 +65,8 @@ public class Game implements Serializable{
 									// het spel start altijd met een bet van amount
 	public GameState start(long amount) {
 		
-			this.player.withdrawChips(amount);
+			String username = this.player.getUser().getUsername();
+			getChips().withdraw(amount);
 			
 			this.player.addCardToHand(gameCards.getCard());
 			this.player.addCardToHand(gameCards.getCard());

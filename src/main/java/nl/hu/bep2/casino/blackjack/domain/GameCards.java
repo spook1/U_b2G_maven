@@ -9,22 +9,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToOne;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.FetchType;
 import javax.persistence.Entity;
 
 
-
-@Entity
 public class GameCards implements Serializable {
 
-    @Id
-    @GeneratedValue
+ 
 	private long id;
 	private int numberOfDecks;
-	@Lob
-	private List<Card> gameCards;
-	@OneToOne(fetch=FetchType.LAZY)
-	private Game game;
+	private List<Card> gameCards = new ArrayList<>();
+	
 
 	public GameCards(int numberOfDecks) {
 		this.numberOfDecks = numberOfDecks;
