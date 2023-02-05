@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import nl.hu.bep2.casino.blackjack.application.BlackJackService;
+import nl.hu.bep2.casino.blackjack.domain.Game;
 import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfoDto;
 
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
@@ -42,5 +43,6 @@ public class StartGameController {
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
 	        }
 	}
+	
 	
 }

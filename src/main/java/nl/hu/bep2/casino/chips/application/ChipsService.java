@@ -38,10 +38,10 @@ public class ChipsService {
         return this.showBalanceFor(chips);
     }
 
-    private Chips findChipsByUsername(String username) {
+    public Chips findChipsByUsername(String username) {
         return this.chipsRepository
                 .findByUsername(username)
-                .orElse(new Chips(username, 0L));
+                .orElse(new Chips());
     }
 
     private Balance showBalanceFor(Chips chips) {

@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import nl.hu.bep2.casino.blackjack.domain.Player;
+import nl.hu.bep2.casino.chips.domain.Chips;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -18,18 +19,15 @@ public class User implements UserDetails {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL, orphanRemoval=true)
-    private List<Player> players;
-    
     @Column(nullable = false, unique = true)
     private String username;
     private String password;
     private String firstName;
     private String lastName;
-    
 
     public User() {
     }
+
 
     public User(String username, String password, String firstName, String lastName) {
         this.username = username;

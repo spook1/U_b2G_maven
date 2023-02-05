@@ -3,6 +3,7 @@ package nl.hu.bep2.casino.blackjack.domain;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Convert;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import nl.hu.bep2.casino.blackjack.data.CardListConverter;
+import nl.hu.bep2.casino.chips.application.ChipsService;
+import nl.hu.bep2.casino.chips.domain.Chips;
+
 //import org.springframework.data.annotation.Id;
 
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
@@ -24,17 +29,19 @@ import nl.hu.bep2.casino.security.domain.User;
 @Entity
 public class Game implements Serializable{
 	
+
 	@Id
     @GeneratedValue
 	private long id;
 	 
-    @Lob
+	@Convert(converter = CardListConverter.class)
+	//private List<Card> cards;
 	private GameCards gameCards;
     
     @Enumerated(EnumType.STRING)
 	private GameState gameState;
   
-	@OneToOne(mappedBy="game", cascade = CascadeType.ALL)  //MAG JE IN DIT GEVAL MAPPED BY WEGLATEN OMDAT DAT VOOR ZOCH SPREEKT?
+	@OneToOne(mappedBy="game", cascade = CascadeType.ALL)  
 	private Player player;
 	
     @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
@@ -63,15 +70,19 @@ public class Game implements Serializable{
 	
 
 									// het spel start altijd met een bet van amount
-	public GameState start(long amount) {
+	public GameState start(long amount, ChipsService chipsService) {
 		
 			String username = this.player.getUser().getUsername();
-			getChips().withdraw(amount);
+			Chips chips = chipsService.findChipsByUsername(username);
+			
+	        chips.withdraw(amount);
 			
 			this.player.addCardToHand(gameCards.getCard());
 			this.player.addCardToHand(gameCards.getCard());
 			this.dealer.addCardToHand(gameCards.getCard());
 			this.dealer.addCardToHand(gameCards.getCard());
+			
+			this.gameState=GameState.playing;
 			
 			try {
 				this.gameState = MoveChecker.checkAndHandleMove(Move.bet,this.player,this.dealer,this.gameState);
@@ -80,11 +91,11 @@ public class Game implements Serializable{
 				e.printStackTrace();
 			}
 			 if (this.gameState == GameState.push){
-				 player.depositChips(amount);   //speler krijgt inleg terug
+			 chips.deposit(amount);   //speler krijgt inleg terug
 			 }
 			 else if( this.gameState == GameState.blackjack) {
 
-				 player.depositChips((long)(1.5*amount)); 
+	     	 chips.deposit((long)(1.5*amount)); 
 			 }
 			
 			return this.gameState;

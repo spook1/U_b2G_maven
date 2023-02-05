@@ -14,36 +14,43 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import nl.hu.bep2.casino.blackjack.application.BlackJackService;
+import nl.hu.bep2.casino.blackjack.application.GamesService;
 import nl.hu.bep2.casino.blackjack.domain.Game;
 import nl.hu.bep2.casino.blackjack.domain.GameState;
 import nl.hu.bep2.casino.blackjack.domain.Move;
 import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfoDto;
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
+import nl.hu.bep2.casino.security.application.UserService;
 import nl.hu.bep2.casino.security.domain.UserProfile;
+
 
 @RestController
 @RequestMapping("/game")
-public class ShowMovesController {
-
-	private final BlackJackService service;
+public class GamesController {
+	
+	private final GamesService service;
 	// StartGameService injecteren, en service noemen
-	public ShowMovesController(BlackJackService service) {
+	public GamesController(GamesService service) {
 		this.service =service;
 	}
 	
-	@PostMapping("/showmoves")
+	@PostMapping("/showgames")
 	@ResponseBody
-	public List<Move> showMoves(Authentication authentication, @Validated @RequestBody GameState gameState){
-	
+	public List<Game> getGames(Authentication authentication, UserService userService){
+		UserProfile profile = (UserProfile) authentication.getPrincipal();
+		
 		 try {
-			 	List<Move> moves = new ArrayList<>();
-			 	moves = this.service.showMoves(gameState);
+			 	List<Game> gameList = new ArrayList<>();
+			 	String username = profile.getUsername();
 			 	
-	            return moves;
+			 	gameList = this.service.GetGamesByUsername(username);
+			 	System.out.println("arralaylength = "+ gameList.size());
+	            return gameList;
 	            
 	        } catch (NegativeNumberException exception) {
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
 	        }
-	}
 		
+	}
+	
 }

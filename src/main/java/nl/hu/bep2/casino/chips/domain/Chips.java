@@ -17,10 +17,7 @@ public class Chips {
     @GeneratedValue
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name= "username")
-    private User user;
-  //  private String username;
+    private String username;
 
     private Long amount;
 
@@ -31,16 +28,10 @@ public class Chips {
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastUpdate;
-    
-    private UserRepository userRepository;
 
     public Chips() {
     }
 
-    public Chips(String username, Long amount) {
-        this.user = userRepository.findByUsername(username).orElse(null);
-        this.amount = amount;
-    }
 
     public void withdraw(Long amountToWithdraw) {
         if (amountToWithdraw < 0) {
@@ -71,7 +62,7 @@ public class Chips {
     }
 
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     public Long getAmount() {

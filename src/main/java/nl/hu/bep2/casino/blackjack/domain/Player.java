@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.security.domain.User;
 
-@Transactional
+//@Transactional
 @Entity
 public class Player extends Hand {
 
@@ -31,9 +31,9 @@ public class Player extends Hand {
 	@JoinColumn(name="game_id")
 	private Game game;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	private User user;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips. dit private obejct wordt in de applicatielaag gevuld met de chips van de user
-							//dependency injection van chips in player in apllicatielag, blackjackservice, startgame
+	@OneToOne(fetch = FetchType.LAZY)
+	private User user;    // niet via id koppelen aan een object, user heeft de link naar gepersisteerde chips. dit private object wordt in de applicatielaag gevuld met de chips van de user
+							//dependency injection van chips in player in applicatielaag, blackjackservice, startgame
 
 	public Player(User user) {
 		super();

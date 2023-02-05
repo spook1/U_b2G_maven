@@ -56,7 +56,7 @@ public class BlackJackService {
 			List<Object> gameInfo = new ArrayList<>();
 			
 			// gamestart plaatst bet ter hoogte van amount en rekent resultaat uit mvb van MoveChecker, past player aan ( hand en chips)
-			game.start(amount) ;
+			game.start(amount, chipsService) ;
 				
 			
 // EVEN UITYGEZET, NU DOET IE HET HET MIN OF MEER IN pSOTMAN  DE BET VAN 10 CHIPS WORDT OOK NIET VERWERKT IN CHIPSTABEL, MAAR DAAR GEEN FOUTMELDING			

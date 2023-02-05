@@ -18,8 +18,8 @@ public class MoveChecker {
 	public static GameState checkAndHandleMove(Move move, Player player , Dealer dealer, GameState gameState) throws Exception {
 		
 		 	//handscore heeft twee waarden, eerste waarde telt de aas als 11, tweede waarde telt de aas als 1, meestal zijn ze dus gelijk.
-		 if (gameState != GameState.playing) {
-			 throw new Exception("Het spel is al afgelopen. De GameState is: " + gameState);
+		 if (gameState != GameState.waiting) {
+			 throw new Exception("Het spel is al bezig en kan niet nog een keer gestart worden. De GameState is: " + gameState);
 		 }
 			  switch(move){ 
 			  // eerste keer twee kaarten uitdelen, als er 21 is is dat in de eerste waarde
