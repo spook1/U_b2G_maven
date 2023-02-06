@@ -1,8 +1,10 @@
 package nl.hu.bep2.casino.blackjack.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -27,15 +29,16 @@ import nl.hu.bep2.casino.security.domain.User;
 
 @Transactional
 @Entity
-public class Game implements Serializable{
+public class Game {
 	
 
 	@Id
     @GeneratedValue
 	private long id;
 	 
-	@Convert(converter = CardListConverter.class)
+	//@Convert(converter = CardListConverter.class)
 	//private List<Card> cards;
+	@Column(length = 20000)
 	private GameCards gameCards;
     
     @Enumerated(EnumType.STRING)
@@ -48,6 +51,8 @@ public class Game implements Serializable{
 	private Dealer dealer;
     
 	private Move current_move;
+	
+	private Integer numberOfDecks;
 
 	
 	//GAME WORDT AANGEMAAKT BIJ EERSTE BET, DE SPELER N DE DEALER KRIJGEN DAN METEEN TWEE KAARTEN. Dan is het spel op de wagen dus is de gamestate ook meteen playing.
@@ -59,7 +64,7 @@ public class Game implements Serializable{
 	
 	public Game(Player player, int numberOfDecks) {
 		
-		
+		this.numberOfDecks = numberOfDecks;   // voor de zekerheid meegeven, misschien willen we later terugvragen hoeveel decks er gebruikt zijn..
 		this.player = player;
 		this.gameCards = new GameCards(numberOfDecks);
 		this.gameState = GameState.waiting;

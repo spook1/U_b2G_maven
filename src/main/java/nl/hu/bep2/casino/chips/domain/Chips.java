@@ -31,6 +31,11 @@ public class Chips {
 
     public Chips() {
     }
+    
+public Chips(String username, Long amount) {
+    this.username = username;
+    this.amount = amount;
+}
 
 
     public void withdraw(Long amountToWithdraw) {

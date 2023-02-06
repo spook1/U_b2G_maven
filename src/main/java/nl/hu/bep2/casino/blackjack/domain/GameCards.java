@@ -19,13 +19,12 @@ import javax.persistence.Entity;
 public class GameCards implements Serializable {
 
  
-	private long id;
-	private int numberOfDecks;
-	private List<Card> gameCards = new ArrayList<>();
+	private List<Card> gameCards = new ArrayList<>();  
 	
-
-	public GameCards(int numberOfDecks) {
-		this.numberOfDecks = numberOfDecks;
+	public GameCards() {
+	};
+	
+	public GameCards(int numberOfDecks) {  //wordt in game.start aangeroepen en game kent aantal decks.
 		
 		this.gameCards = GameCards.initiateDeck(numberOfDecks);
 	}
@@ -61,10 +60,9 @@ public class GameCards implements Serializable {
 	}
 	
 	
-	public int getNumberOfDecks() {
-		return this.numberOfDecks;
-	}
-
+	/*
+	 * public int getNumberOfDecks() { return this.numberOfDecks; }
+	 */
 
 	public Card getCard() {
 		
@@ -72,13 +70,13 @@ public class GameCards implements Serializable {
 		
 		card = this.gameCards.get(1);
 		this.gameCards.remove(1);
-		return card;
-		
+		return card;	
 		
 	}
-	public void setNumberOfDecks(int numberOfDecks) {
-		this.numberOfDecks = numberOfDecks;
-	}
+	/*
+	 * public void setNumberOfDecks(int numberOfDecks) { this.numberOfDecks =
+	 * numberOfDecks; }
+	 */
 	/*
 	 * public void setGameCards(ArrayList<Card> gameCards) { this.gameCards =
 	 * gameCards; }

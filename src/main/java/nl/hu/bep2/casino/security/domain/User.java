@@ -4,9 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import nl.hu.bep2.casino.blackjack.domain.Player;
-import nl.hu.bep2.casino.chips.domain.Chips;
-
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;

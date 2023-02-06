@@ -41,7 +41,7 @@ public class ChipsService {
     public Chips findChipsByUsername(String username) {
         return this.chipsRepository
                 .findByUsername(username)
-                .orElse(new Chips());
+                .orElse(new Chips(username, 0L));
     }
 
     private Balance showBalanceFor(Chips chips) {
