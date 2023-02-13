@@ -36,8 +36,8 @@ public class Game {
     @GeneratedValue
 	private long id;
 	 
-	//@Convert(converter = CardListConverter.class)
-	//private List<Card> cards;
+	@Convert(converter = CardListConverter.class)
+	//private List<Card> cards;  
 	@Column(length = 20000)
 	private GameCards gameCards;
     
@@ -62,15 +62,16 @@ public class Game {
 		
 	}
 	
-	public Game(Player player, int numberOfDecks) {
+	public Game(User user, int numberOfDecks) {
 		
 		this.numberOfDecks = numberOfDecks;   // voor de zekerheid meegeven, misschien willen we later terugvragen hoeveel decks er gebruikt zijn..
-		this.player = player;
 		this.gameCards = new GameCards(numberOfDecks);
 		this.gameState = GameState.waiting;
-		this.dealer = new Dealer();
-	
-				
+		
+		this.player = new Player(user,this);   // een user maakt een spel aan, en daarmee meteen een speler
+		//this.player.setGame(this);
+		this.dealer = new Dealer();		//make a new dealer for this game
+		//this.dealer.setGame(this);
 	}
 	
 
@@ -78,9 +79,6 @@ public class Game {
 	public GameState start(long amount, ChipsService chipsService) {
 		
 			String username = this.player.getUser().getUsername();
-			Chips chips = chipsService.findChipsByUsername(username);
-			
-	        chips.withdraw(amount);
 			
 			this.player.addCardToHand(gameCards.getCard());
 			this.player.addCardToHand(gameCards.getCard());
@@ -89,8 +87,13 @@ public class Game {
 			
 			this.gameState=GameState.playing;
 			
+			// dit blok code moet nog naar service verplaatst worden:
+			Chips chips = chipsService.findChipsByUsername(username);
+	        chips.withdraw(amount);
+			
 			try {
 				this.gameState = MoveChecker.checkAndHandleMove(Move.bet,this.player,this.dealer,this.gameState);
+				this.current_move = Move.bet;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -106,12 +109,8 @@ public class Game {
 			return this.gameState;
 	}
 	
-
-	
 	public Move selectMove(Move move) {
-		
 		this.current_move = move;
-		
 		return move;
 	}
 	
@@ -123,15 +122,29 @@ public class Game {
 		return this.gameState;
 	}
 	
-	   public long getId() {
-			return id;
-		}
+   public long getId() {
+		return id;
+	}
 
-		public void setId(long id) {
-			this.id = id;
-		}
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setDealer(Dealer dealer) {
+		this.dealer = dealer;
+	}
+
+	@Override
+	public String toString() {
+		return "Game [id=" + id + ", gameCards=" + gameCards + ", gameState=" + gameState + ",  numberOfDecks=" + numberOfDecks + "]";
+	}
+	
 		
-		
+	
 
 	
 	

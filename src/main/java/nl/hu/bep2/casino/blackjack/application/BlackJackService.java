@@ -51,8 +51,8 @@ public class BlackJackService {
 			Chips chips = chipsRepository.findByUsername(username).orElse(null);
 			User user = userRepository.findByUsername(username).orElse(null);
 			
-			Player player = new Player(user);
-			Game game= new Game(player, numberOfDecks);
+			Game game= new Game(user, numberOfDecks);
+		//	player.setGame(game);					// koppel de nieuwe speler aan de nieuwe game, elke game heeft één speler
 			List<Object> gameInfo = new ArrayList<>();
 			
 			// gamestart plaatst bet ter hoogte van amount en rekent resultaat uit mvb van MoveChecker, past player aan ( hand en chips)
@@ -70,7 +70,7 @@ public class BlackJackService {
 			dealerCards[1]= holeDealerCard;
 			//map.put(player, dealerCards);		
 		
-			gameInfo.add(player);  // hand en chips
+			gameInfo.add(game.getPlayer());  // hand en chips
 			gameInfo.add(dealerCards); //een open en een dichte kaart
 			gameInfo.add(game);
 			

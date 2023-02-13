@@ -26,6 +26,11 @@ public class Dealer extends Hand{
 		super();
 	}
 	
+	public Dealer (Game game) {
+		super();
+		this.game = game;
+	}
+	
 	public Card getFirstDealerCard () {
 		Card firstDealerCard = this.getKaartenOpHand().get(1);
 		return firstDealerCard;
@@ -38,6 +43,15 @@ public class Dealer extends Hand{
 	public void setId(long id) {
 		this.id = id;
 	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
+	
 	
 	
 

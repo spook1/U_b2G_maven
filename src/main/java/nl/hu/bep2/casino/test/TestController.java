@@ -18,7 +18,7 @@ import nl.hu.bep2.casino.blackjack.domain.Hand;
 
 public class TestController {
 	
-	private final static int numDecks =3;
+	private final static int numDecks =1;
 
 	@GetMapping("/test")
 	//public ArrayList<Card> gameDeck() {

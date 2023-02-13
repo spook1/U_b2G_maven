@@ -2,8 +2,10 @@ package nl.hu.bep2.casino.blackjack.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import nl.hu.bep2.casino.blackjack.data.GameRepository;
 import nl.hu.bep2.casino.blackjack.data.PlayerRepository;
@@ -13,22 +15,31 @@ import nl.hu.bep2.casino.chips.application.ChipsService;
 import nl.hu.bep2.casino.security.application.UserService;
 import nl.hu.bep2.casino.security.domain.User;
 
+@Service
 public class PlayerService {
 	
 	@Autowired
 	private PlayerRepository playerRepository;
 	@Autowired
 	private UserService userService;
-	
-	public PlayerService(){
-	}
 
-	public Player GetPlayerByUsername(String username) {
+
+	public List<Player> GetPlayerByUsername(String username) {
 		
 		User user = userService.loadUserByUsername(username);
-		Player player = playerRepository.findByUser(user).orElse(null);
+		List<Player> players = playerRepository.findByUser(user);          //.orElse(null);
 		
-		return player;
+		return players;
+	}
+	
+	public Player getPlayerById(Long playerId) {
+		Player player = playerRepository.findById(playerId).orElse(null);
+		if (player !=null) {
+			return player;
+		}
+		else {
+			return null;
+		}
 	}
 }
 	

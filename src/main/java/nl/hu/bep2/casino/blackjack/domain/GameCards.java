@@ -18,7 +18,6 @@ import javax.persistence.Entity;
 
 public class GameCards implements Serializable {
 
- 
 	private List<Card> gameCards = new ArrayList<>();  
 	
 	public GameCards() {
@@ -29,8 +28,8 @@ public class GameCards implements Serializable {
 		this.gameCards = GameCards.initiateDeck(numberOfDecks);
 	}
 	
-	// ##### NAMED CONSTRUCTIOR : roep static methode aan om meteen in de constructor de deck te vullen. Is dat wat ze bedoelen?
-
+	// ##### NAMED CONSTRUCTIOR : roep static methode aan om meteen in de constructor de deck te vullen.
+	
 	public static List<Card> initiateDeck(int numberOfDecks) {
 		
 		
@@ -58,11 +57,6 @@ public class GameCards implements Serializable {
 	public  List<Card> getGameCards(){
 		return this.gameCards;
 	}
-	
-	
-	/*
-	 * public int getNumberOfDecks() { return this.numberOfDecks; }
-	 */
 
 	public Card getCard() {
 		
@@ -71,17 +65,6 @@ public class GameCards implements Serializable {
 		card = this.gameCards.get(1);
 		this.gameCards.remove(1);
 		return card;	
-		
-	}
-	/*
-	 * public void setNumberOfDecks(int numberOfDecks) { this.numberOfDecks =
-	 * numberOfDecks; }
-	 */
-	/*
-	 * public void setGameCards(ArrayList<Card> gameCards) { this.gameCards =
-	 * gameCards; }
-	 */
-	
 
-	
+	}
 }
