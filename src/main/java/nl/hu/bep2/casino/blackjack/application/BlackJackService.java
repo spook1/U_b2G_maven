@@ -17,6 +17,7 @@ import nl.hu.bep2.casino.blackjack.domain.Move;
 import nl.hu.bep2.casino.blackjack.domain.MoveChecker;
 import nl.hu.bep2.casino.blackjack.domain.Player;
 import nl.hu.bep2.casino.blackjack.domain.Waarde;
+import nl.hu.bep2.casino.chips.application.Balance;
 import nl.hu.bep2.casino.chips.application.ChipsService;
 import nl.hu.bep2.casino.chips.data.ChipsRepository;
 import nl.hu.bep2.casino.chips.domain.Chips;
@@ -45,42 +46,76 @@ public class BlackJackService {
 			
 		}
 		
-		public List<Object> start(String username,int numberOfDecks, long amount){
+		public List<Object> start(String username,int numberOfDecks, long inzet){
 
 		
 			Chips chips = chipsRepository.findByUsername(username).orElse(null);
 			User user = userRepository.findByUsername(username).orElse(null);
-			
-			Game game= new Game(user, numberOfDecks);
-		//	player.setGame(game);					// koppel de nieuwe speler aan de nieuwe game, elke game heeft één speler
 			List<Object> gameInfo = new ArrayList<>();
 			
-			// gamestart plaatst bet ter hoogte van amount en rekent resultaat uit mvb van MoveChecker, past player aan ( hand en chips)
-			game.start(amount, chipsService) ;
-				
+		    Game game= new Game(user, numberOfDecks, inzet);
+		
+			chips.withdraw(inzet);    // bet plaatsen
 			
-// EVEN UITYGEZET, NU DOET IE HET HET MIN OF MEER IN pSOTMAN  DE BET VAN 10 CHIPS WORDT OOK NIET VERWERKT IN CHIPSTABEL, MAAR DAAR GEEN FOUTMELDING			
-	
-	        
-			//Map<Player,Card[]> map = new HashMap<>();
+			game.start() ;   // kaarten delen aan speler en dealer
+			
+			//berekenen wat de stand van zaken is
+			//we starten de game dus de eerste Move is een bet, die is al ingevuld, eerste inzet was al bekend gemaakt bij creatie van gameobject
+			// inzet is opgeslagen in een game zodat die ook bewaard is in de databse.
+			try {
+				game.setGameState( MoveChecker.checkAndHandleMove(Move.bet,game));
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			// numoeten we kijken welke kaarten de speler te zien krijgt, als 
+			//als de speler 21 heeft en de dealer ook eindigt het spel (push)
+			//als de speler 21 heeft en de dealer niet (blackjack) 
+			// mag de speler toch ook nog even de dealerkaarten zien.
+			
 			Card openDealerCard= game.getDealer().getFirstDealerCard();
+			Card dealerCardTwo = game.getDealer().getSecondDealerCard();
 			Card holeDealerCard = new Card(Kleur.achterkant, Waarde.achterkant);
 			Card[] dealerCards = new Card[2];
 			dealerCards[0]= openDealerCard;
 			dealerCards[1]= holeDealerCard;
-			//map.put(player, dealerCards);		
-		
-			gameInfo.add(game.getPlayer());  // hand en chips
-			gameInfo.add(dealerCards); //een open en een dichte kaart
-			gameInfo.add(game);
-		
-			
-			// EVEN NEERGEZET OM TE VOORKOMEN DAT CURRENT_MIVE EEN NULL VALUE WORDT, DAT KAN MISSCHIEN PROBLEEM VEROORZAKEN??
-			game.setCurrent_move(Move.bet);
 			
 			
-	        this.gameRepository.save(game);
-	        this.chipsService.depositChips(user.getUsername(), amount);		
+			 if (game.getGameState() == GameState.push){
+				 dealerCards[0]= openDealerCard;
+				 dealerCards[1]= dealerCardTwo;
+				 chips.deposit(inzet);   //speler krijgt inleg terug
+			 }
+			 else if( game.getGameState() == GameState.blackjack) {
+					dealerCards[0]= openDealerCard;
+					dealerCards[1]= dealerCardTwo;
+					chips.deposit((long)(2.5*inzet)); //speler krijgt inzet terug + 1,5 inzet winst totaal 2,5
+			 }
+			 else {
+					dealerCards[0]= openDealerCard;
+					dealerCards[1]= holeDealerCard;
+			 }
+			 
+			 // de hele ronde is nu afgehandeld, speler is betaald, nieuwe game wordt opgeslagen
+		     this.gameRepository.save(game);
+			
+			 
+			 // nu heeft de server dat al uitgerekend, nu nog  aan de gebruiker laten weten wat er gebeurd is.
+			 // we sturen 
+			 // - de kaarten op tafel van speler en van de dealer, 
+			 // - de inzet(hoewel de speler dat zelf heeft opgegeven)
+			 // - de nieuwe balance
+			 // - de gamestate, ter verklaring van de nieuwe balans
+        
+	    	Balance balance = chipsService.findBalance(username);
+					
+			gameInfo.add(game.getPlayer().getKaartenOpHand());  // kaarten op hand speler
+			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart
+			gameInfo.add(game.getInzet());// wat ahd de speler ingezet
+			gameInfo.add(game.getGameState());//nodig om volgende moves te bepalen
+			gameInfo.add(balance);  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
 			
 			return gameInfo;
 		}
@@ -91,6 +126,32 @@ public class BlackJackService {
 			moves = MoveChecker.showMoves(gameState);
 			return moves;
 			
+		}
+		
+		public List<Object> vervolgZet(Game game,Move move, long inzet){
+			
+			Chips chips = chipsRepository.findByUsername(game.getPlayer().getUser().getUsername()).orElse(null);
+			List<Object> gameInfo = new ArrayList<>();
+			//check of een geldige move is gekozen
+			if (MoveChecker.showMoves(game.getGameState()).contains(move)) {
+					game.setGameState( MoveChecker.checkAndHandleMove(move,game) );
+					/*
+					 * //• Bust: speler krijgt niets terug • Lost: speler krijgt niets terug •
+					 * Surrendered: speler krijgt 0.5× zijn inleg terug • Push: speler krijgt 1×
+					 * zijn inleg terug • Blackjack: speler krijgt 1.5× zijn inleg terug • Won:
+					 * speler krijgt 2× zijn inleg terug
+					 */
+			}
+			Balance balance = chipsService.findBalance(username);
+			
+			gameInfo.add(game.getPlayer().getKaartenOpHand());  // kaarten op hand speler
+			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart
+			gameInfo.add(game.getInzet());// wat ahd de speler ingezet
+			gameInfo.add(game.getGameState());//nodig om volgende moves te bepalen
+			gameInfo.add(balance);  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
+			
+			return gameInfo;
+		
 		}
 	}
 

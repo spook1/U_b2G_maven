@@ -15,7 +15,11 @@ public class MoveChecker {
 	}
 	
 	
-	public static GameState checkAndHandleMove(Move move, Player player , Dealer dealer, GameState gameState) throws Exception {
+	public static GameState checkAndHandleMove(Move move, Game game) throws Exception {
+		
+		Player player = game.getPlayer();
+		Dealer dealer = game.getDealer();
+		GameState gameState = game.getGameState();
 		
 		 	//handscore heeft twee waarden, eerste waarde telt de aas als 11, tweede waarde telt de aas als 1, meestal zijn ze dus gelijk.
 		 if (gameState != GameState.waiting) {

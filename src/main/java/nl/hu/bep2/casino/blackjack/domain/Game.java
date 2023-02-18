@@ -55,6 +55,8 @@ public class Game {
     
 	private Move current_move;
 	
+	private Long inzet;
+	
 	private Integer numberOfDecks;
 
 	
@@ -65,7 +67,7 @@ public class Game {
 		
 	}
 	
-	public Game(User user, int numberOfDecks) {
+	public Game(User user, int numberOfDecks, Long inzet) {
 		
 		this.numberOfDecks = numberOfDecks;   // voor de zekerheid meegeven, misschien willen we later terugvragen hoeveel decks er gebruikt zijn..
 		this.gameCards = new GameCards(numberOfDecks);
@@ -75,40 +77,20 @@ public class Game {
 		//this.player.setGame(this);
 		this.dealer = new Dealer(this);		//make a new dealer for this game
 		//this.dealer.setGame(this);
+		this.inzet = inzet;
 		
 	}
 	
 
 									// het spel start altijd met een bet van amount
-	public GameState start(long amount, ChipsService chipsService) {
+	public GameState start() {
 		
-			String username = this.player.getUser().getUsername();
-			
 			this.player.addCardToHand(gameCards.getCard());
 			this.player.addCardToHand(gameCards.getCard());
 			this.dealer.addCardToHand(gameCards.getCard());
 			this.dealer.addCardToHand(gameCards.getCard());
 			
 			this.gameState=GameState.playing;
-			
-			// dit blok code moet nog naar service verplaatst worden:
-			Chips chips = chipsService.findChipsByUsername(username);
-	        chips.withdraw(amount);
-			
-			try {
-				this.gameState = MoveChecker.checkAndHandleMove(Move.bet,this.player,this.dealer,this.gameState);
-				this.current_move = Move.bet;
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			 if (this.gameState == GameState.push){
-			 chips.deposit(amount);   //speler krijgt inleg terug
-			 }
-			 else if( this.gameState == GameState.blackjack) {
-
-	     	 chips.deposit((long)(1.5*amount)); 
-			 }
 			
 			return this.gameState;
 	}
@@ -126,6 +108,10 @@ public class Game {
 		return this.gameState;
 	}
 	
+	public void setGameState(GameState gamestate) {
+		 this.gameState=gamestate;
+	}
+	
    public long getId() {
 		return id;
 	}
@@ -141,8 +127,14 @@ public class Game {
 	public void setDealer(Dealer dealer) {
 		this.dealer = dealer;
 	}
-	
-	
+
+	public Long getInzet() {
+		return inzet;
+	}
+
+	public void setFirstBet(Long inzet) {
+		this.inzet = inzet;
+	}
 
 	public Move getCurrent_move() {
 		return current_move;

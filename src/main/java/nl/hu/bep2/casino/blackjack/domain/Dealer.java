@@ -32,8 +32,13 @@ public class Dealer extends Hand{
 	}
 	
 	public Card getFirstDealerCard () {
-		Card firstDealerCard = this.getKaartenOpHand().get(1);
+		Card firstDealerCard = this.getKaartenOpHand().get(0);
 		return firstDealerCard;
+	}
+	
+	public Card getSecondDealerCard () {
+		Card secondDealerCard = this.getKaartenOpHand().get(1);
+		return secondDealerCard;
 	}
 
 	public long getId() {
