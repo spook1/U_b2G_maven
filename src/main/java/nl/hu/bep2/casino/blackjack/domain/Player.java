@@ -2,6 +2,7 @@ package nl.hu.bep2.casino.blackjack.domain;
 
 
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 import javax.persistence.FetchType;
@@ -17,16 +18,21 @@ import javax.persistence.Entity;
 import org.hibernate.annotations.LazyToOne;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import nl.hu.bep2.casino.chips.domain.Chips;
 import nl.hu.bep2.casino.security.domain.User;
 
 @Transactional
 @Entity
-public class Player extends Hand {
+@JsonIgnoreProperties("game")
+public class Player extends Hand implements Serializable{
 
 	@Id
 	@GeneratedValue
 	private long id;
+	//@JsonManagedReference
 	@OneToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="game_id")
 	private Game game;

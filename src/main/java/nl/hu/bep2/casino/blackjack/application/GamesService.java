@@ -24,8 +24,7 @@ public class GamesService {
 	
 	@Autowired
 	private GameRepository gameRepository;
-	@Autowired
-	private UserService userService;
+
 	@Autowired
 	private PlayerService playerService;
 	
@@ -36,7 +35,7 @@ public class GamesService {
 	public Game GetGameByPlayer(long playerId) {
 		
 		Player player = this.playerService.getPlayerById(playerId);
-		Game game = this.gameRepository.findByPlayer(player).orElse(null);
+		Game game = this.gameRepository.findByPlayer(player);
 		System.out.println("player = "+ player);
 		System.out.println("speler:   "+ player.getId() + "  /n vinden we game " + game.getId());
 		
@@ -44,32 +43,23 @@ public class GamesService {
 		
 	}
 	
-	public void GetGamesByUsername(String username) {
-		
-		List<Player> players = this.playerService.GetPlayerByUsername(username);
-		for ( Player p : players) {	
-			System.out.println("=====================1");
-			System.out.println("player = "+ p);
-			System.out.println("=====================2");
-			
-			Game game =  this.gameRepository.findByPlayer(p).orElse(null);
-			System.out.println("====================3");
-			System.out.println("player ="+ p);
-			if (game != null) {
-				System.out.println("speler:   "+ p.getId() + "  /n vinden we game " + game.getId());
-			}else{
-				System.out.println("speler:   "+ p.getId() + "  heeft geen game");
-			}
-			
-			
-		}
 	
-		List<Game> gameList = this.gameRepository.findAll();
-		for (Game g : gameList ) {
-            System.out.println("Game =  " + g);
-        }
+
+	public List<Game> GetGamesByUsername(String username) {
+		//User user = userService.loadUserByUsername(username);
+		//List<Game> gameList = gameRepository.findAllByPlayerUser(user);
+		//OMDAT BOVENSTAANDE AANPAK EEN NESTED NULL ERROR GEEFT, EN OP EEN OF ANDERE MANIER GAME NIET GEVONDEN KAN WORDEN ONDERSTAANDE WORKAAROUND GEVONDEN
+		  
+		List<Game> gameList = new ArrayList<>(); 
+		  List<Player> players = this.playerService.GetPlayerByUsername(username);
+		  
+		  for ( Player p : players) { Game game =
+		  this.gameRepository.findById(p.getGame().getId()).orElse(null);
+		  gameList.add(game); }
+		 
+		return gameList;
 		
-		//return this.gameRepository.findAll();
+		
 		
 	}
 	

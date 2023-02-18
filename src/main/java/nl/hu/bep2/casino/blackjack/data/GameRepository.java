@@ -10,9 +10,10 @@ import nl.hu.bep2.casino.blackjack.domain.Player;
 import nl.hu.bep2.casino.security.domain.User;
 
 public interface GameRepository  extends JpaRepository<Game, Long>{
-	Optional<Game> findByPlayer(Player player);
+	Game findByPlayer(Player player);
+	Optional<Game> findById(Long id);
 	
-//	List<Game> FindAllByPlayerUser(User user);
+	List<Game> findAllByPlayerUser(User user);
 }
 
 

@@ -15,6 +15,9 @@ import javax.persistence.OneToOne;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -29,6 +32,7 @@ import nl.hu.bep2.casino.security.domain.User;
 
 @Transactional
 @Entity
+@JsonIgnoreProperties({"player","dealer"})
 public class Game {
 	
 
@@ -37,7 +41,6 @@ public class Game {
 	private long id;
 	 
 	@Convert(converter = CardListConverter.class)
-	//private List<Card> cards;  
 	@Column(length = 20000)
 	private GameCards gameCards;
     
@@ -70,8 +73,9 @@ public class Game {
 		
 		this.player = new Player(user,this);   // een user maakt een spel aan, en daarmee meteen een speler
 		//this.player.setGame(this);
-		this.dealer = new Dealer();		//make a new dealer for this game
+		this.dealer = new Dealer(this);		//make a new dealer for this game
 		//this.dealer.setGame(this);
+		
 	}
 	
 
@@ -136,6 +140,16 @@ public class Game {
 
 	public void setDealer(Dealer dealer) {
 		this.dealer = dealer;
+	}
+	
+	
+
+	public Move getCurrent_move() {
+		return current_move;
+	}
+
+	public void setCurrent_move(Move current_move) {
+		this.current_move = current_move;
 	}
 
 	@Override

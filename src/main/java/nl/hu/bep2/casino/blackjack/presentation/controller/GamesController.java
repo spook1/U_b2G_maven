@@ -31,46 +31,26 @@ import nl.hu.bep2.casino.security.domain.UserProfile;
 public class GamesController {
 	
 	private final GamesService service;
-	// StartGameService injecteren, en service noemen
+	// SameService injecteren, en service noemen
 	public GamesController(GamesService service) {
-		this.service =service;
+		this.service = service;
 	}
 	
 	@PostMapping("/showgames")
 	@ResponseBody
-	public void getGames(Authentication authentication, UserService userService){
+	public List<Game> getGames(Authentication authentication, UserService userService){
 		UserProfile profile = (UserProfile) authentication.getPrincipal();
 		
-		 try {
-			 	List<Game> gameList = new ArrayList<>();
-			 	String username = profile.getUsername();
+	 try {
+		 	List<Game> gameList = new ArrayList<>();
+		 	String username = profile.getUsername();
  	
-			 	//gameList = 
-			 			this.service.GetGamesByUsername(username);
+			gameList = this.service.GetGamesByUsername(username);
 			
-	         //   return gameList;
+	        return gameList;
 	            
 	        } catch (NegativeNumberException exception) {
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
 	        }
-		
 	}
-	
-	@PostMapping("/showgame/{playerId}")
-	@ResponseBody
-	public Game getGame(@PathVariable Long playerId, Authentication authentication, UserService userService){
-		UserProfile profile = (UserProfile) authentication.getPrincipal();
-		
-		 try {
-			 	
-			 	Game game = this.service.GetGameByPlayer(playerId);
-			
-	            return game;
-	            
-	        } catch (NegativeNumberException exception) {
-	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
-	        }
-		
-	}
-	
 }

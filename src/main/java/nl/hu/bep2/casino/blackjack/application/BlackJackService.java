@@ -73,6 +73,10 @@ public class BlackJackService {
 			gameInfo.add(game.getPlayer());  // hand en chips
 			gameInfo.add(dealerCards); //een open en een dichte kaart
 			gameInfo.add(game);
+		
+			
+			// EVEN NEERGEZET OM TE VOORKOMEN DAT CURRENT_MIVE EEN NULL VALUE WORDT, DAT KAN MISSCHIEN PROBLEEM VEROORZAKEN??
+			game.setCurrent_move(Move.bet);
 			
 			
 	        this.gameRepository.save(game);
