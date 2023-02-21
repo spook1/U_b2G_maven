@@ -6,9 +6,11 @@ public class Card implements Serializable  {
 	private Kleur kleur;
 	private Waarde waarde;
 	
+	public Card() {
+	}
+	
 	
 	public Card(Kleur kleur, Waarde waarde) {
-		
 		this.kleur = kleur;
 		this.waarde = waarde;
 		// TODO Auto-generated constructor stub

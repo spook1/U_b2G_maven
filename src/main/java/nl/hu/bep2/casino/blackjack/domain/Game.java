@@ -45,23 +45,18 @@ public class Game {
 	private GameCards gameCards;
     
     @Enumerated(EnumType.STRING)
-	private GameState gameState;
+	private GameState gameState= GameState.waiting;
   
 	@OneToOne(mappedBy="game", cascade = CascadeType.ALL)  
 	private Player player;
 	
     @OneToOne(mappedBy="game", cascade = CascadeType.ALL)
 	private Dealer dealer;
-    
-	private Move current_move;
 	
-	private Long inzet;
+	private Long inzet=(long) 0;
 	
-	private Integer numberOfDecks;
+	private Integer numberOfDecks=1;
 
-	
-	//GAME WORDT AANGEMAAKT BIJ EERSTE BET, DE SPELER N DE DEALER KRIJGEN DAN METEEN TWEE KAARTEN. Dan is het spel op de wagen dus is de gamestate ook meteen playing.
-	// speler plaatst bet, en betaalt ook meteen de bet.
 	
 	public Game() {
 		
@@ -71,6 +66,7 @@ public class Game {
 		
 		this.numberOfDecks = numberOfDecks;   // voor de zekerheid meegeven, misschien willen we later terugvragen hoeveel decks er gebruikt zijn..
 		this.gameCards = new GameCards(numberOfDecks);
+		
 		this.gameState = GameState.waiting;
 		
 		this.player = new Player(user,this);   // een user maakt een spel aan, en daarmee meteen een speler
@@ -81,24 +77,19 @@ public class Game {
 		
 	}
 	
-
-									// het spel start altijd met een bet van amount
+							// het spel start altijd met een bet van amount
 	public GameState start() {
 		
-			this.player.addCardToHand(gameCards.getCard());
-			this.player.addCardToHand(gameCards.getCard());
-			this.dealer.addCardToHand(gameCards.getCard());
-			this.dealer.addCardToHand(gameCards.getCard());
+			this.player.addCardToHand(this.gameCards.getCard());
+			this.player.addCardToHand(this.gameCards.getCard());
+			this.dealer.addCardToHand(this.gameCards.getCard());
+			this.dealer.addCardToHand(this.gameCards.getCard());
 			
 			this.gameState=GameState.playing;
 			
 			return this.gameState;
 	}
 	
-	public Move selectMove(Move move) {
-		this.current_move = move;
-		return move;
-	}
 	
 	public Dealer getDealer() {
 		return this.dealer;
@@ -136,13 +127,13 @@ public class Game {
 		this.inzet = inzet;
 	}
 
-	public Move getCurrent_move() {
-		return current_move;
+
+	public GameCards getGameCards() {
+		
+		System.out.println("getGameCards haalt GameCards : "+ this.gameCards);
+		return this.gameCards;
 	}
 
-	public void setCurrent_move(Move current_move) {
-		this.current_move = current_move;
-	}
 
 	@Override
 	public String toString() {

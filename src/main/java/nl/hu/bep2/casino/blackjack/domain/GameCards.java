@@ -12,20 +12,26 @@ import javax.persistence.OneToOne;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.FetchType;
 import javax.persistence.Entity;
 
-
+@JsonIgnoreProperties(ignoreUnknown=true)  // dit heb ik moeten toevoegen omdat ik steeds de foutmelding kreeg dat er een card entity in de gameCrards zat
+											// dat was zo, onverklaarbaar. Na "project clean in eclipse is nog steeds de card entity in de JSON< nu helmaal achteraan..
+											//er was een verdwaalde import van Card entity blijven hangen in de converter, van eerdere pogingen, maar na verewijderen bleef het probleem..
+											// nu is het probleem dus weg doordat ik de onbekende properties in de json negeer.
 public class GameCards implements Serializable {
 
-	private List<Card> gameCards = new ArrayList<>();  
+	private List<Card> gameDeck = new ArrayList<>();  
 	
 	public GameCards() {
-	};
+	}
 	
 	public GameCards(int numberOfDecks) {  //wordt in game.start aangeroepen en game kent aantal decks.
 		
-		this.gameCards = GameCards.initiateDeck(numberOfDecks);
+		this.gameDeck = GameCards.initiateDeck(numberOfDecks);
 	}
 	
 	// ##### NAMED CONSTRUCTIOR : roep static methode aan om meteen in de constructor de deck te vullen.
@@ -41,7 +47,13 @@ public class GameCards implements Serializable {
 		while (loop > 0) {
 			
 			for(Kleur kleur: kleuren) {
+				if (kleur == Kleur.achterkant) {
+					continue;
+				}
 				for( Waarde waarde: waarden) {
+					if (waarde == Waarde.achterkant) {
+						continue;
+					}
 					Card card = new Card(kleur, waarde);
 					cards.add(card);
 				}
@@ -55,16 +67,23 @@ public class GameCards implements Serializable {
 	}
 
 	public  List<Card> getGameCards(){
-		return this.gameCards;
+		return this.gameDeck;
 	}
 
 	public Card getCard() {
 		
-		Card card = null; //new Card(Kleur.klaver,Waarde.aas);
+		Card card = null; ;
 		
-		card = this.gameCards.get(1);
-		this.gameCards.remove(1);
-		return card;	
+		card = this.gameDeck.get(1); // kies de bovenste kaart van het geschudde deck
+		this.gameDeck.remove(1);     //en verwijder deze uit de deck
+		return card;				 //geef deze kaart aan bv een speler of dealer
 
 	}
+
+	@Override
+	public String toString() {
+		return "GameCards [gameDeck=" + gameDeck + "]";
+	}
+	
+	
 }

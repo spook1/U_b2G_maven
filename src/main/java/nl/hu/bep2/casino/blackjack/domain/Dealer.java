@@ -56,6 +56,11 @@ public class Dealer extends Hand{
 	public void setGame(Game game) {
 		this.game = game;
 	}
+
+	@Override
+	public String toString() {
+		return "Dealer [id=" + id + ", game=" + game + "kaartenophand"+ kaartenOpHand +"]";
+	}
 	
 	
 	

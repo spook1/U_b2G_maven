@@ -43,7 +43,6 @@ public class GamesService {
 		
 	}
 	
-	
 
 	public List<Game> GetGamesByUsername(String username) {
 		//User user = userService.loadUserByUsername(username);

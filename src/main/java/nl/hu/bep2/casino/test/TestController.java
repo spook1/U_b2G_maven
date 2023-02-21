@@ -22,15 +22,15 @@ public class TestController {
 
 	@GetMapping("/test")
 	//public ArrayList<Card> gameDeck() {
-	public Map<int[],Hand> testGameCards() {
+	public Map<Integer,Hand> testGameCards() {
 	
 		Hand playerHand = new Hand();
 		GameCards gameCards = new GameCards(numDecks);
 		
-		int[] score = new int[2];
+		int score = 0;
 		//return gameCards.getGameCards();
 		
-		Map<int[],Hand> map = new HashMap<>();
+		Map<Integer,Hand> map = new HashMap<>();
 		
 		playerHand.addCardToHand(gameCards.getCard());
 		playerHand.addCardToHand(gameCards.getCard());

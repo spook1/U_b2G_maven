@@ -47,11 +47,11 @@ public class BlackJackService {
 		}
 		
 		public List<Object> start(String username,int numberOfDecks, long inzet){
-
 		
 			Chips chips = chipsRepository.findByUsername(username).orElse(null);
 			User user = userRepository.findByUsername(username).orElse(null);
 			List<Object> gameInfo = new ArrayList<>();
+			List<Card> dealerCards = new ArrayList<>();
 			
 		    Game game= new Game(user, numberOfDecks, inzet);
 		
@@ -70,49 +70,45 @@ public class BlackJackService {
 				e.printStackTrace();
 			}
 			
-			// numoeten we kijken welke kaarten de speler te zien krijgt, als 
+			// nu moeten we kijken welke kaarten de speler te zien krijgt, als 
 			//als de speler 21 heeft en de dealer ook eindigt het spel (push)
 			//als de speler 21 heeft en de dealer niet (blackjack) 
 			// mag de speler toch ook nog even de dealerkaarten zien.
 			
-			Card openDealerCard= game.getDealer().getFirstDealerCard();
-			Card dealerCardTwo = game.getDealer().getSecondDealerCard();
-			Card holeDealerCard = new Card(Kleur.achterkant, Waarde.achterkant);
-			Card[] dealerCards = new Card[2];
-			dealerCards[0]= openDealerCard;
-			dealerCards[1]= holeDealerCard;
 			
 			
 			 if (game.getGameState() == GameState.push){
-				 dealerCards[0]= openDealerCard;
-				 dealerCards[1]= dealerCardTwo;
+				 dealerCards = game.getDealer().getKaartenOpHand();
 				 chips.deposit(inzet);   //speler krijgt inleg terug
 			 }
 			 else if( game.getGameState() == GameState.blackjack) {
-					dealerCards[0]= openDealerCard;
-					dealerCards[1]= dealerCardTwo;
+				 dealerCards = game.getDealer().getKaartenOpHand();
 					chips.deposit((long)(2.5*inzet)); //speler krijgt inzet terug + 1,5 inzet winst totaal 2,5
 			 }
 			 else {
-					dealerCards[0]= openDealerCard;
-					dealerCards[1]= holeDealerCard;
+			 
+				 Card blindeKaart = new Card(Kleur.achterkant,Waarde.achterkant);
+				 
+				 dealerCards.add(game.getDealer().getFirstDealerCard());
+				 dealerCards.add(blindeKaart);
+				 
 			 }
 			 
-			 // de hele ronde is nu afgehandeld, speler is betaald, nieuwe game wordt opgeslagen
+			 						// de hele ronde is nu afgehandeld, speler is betaald, nieuwe game wordt opgeslagen
 		     this.gameRepository.save(game);
 			
 			 
-			 // nu heeft de server dat al uitgerekend, nu nog  aan de gebruiker laten weten wat er gebeurd is.
-			 // we sturen 
-			 // - de kaarten op tafel van speler en van de dealer, 
-			 // - de inzet(hoewel de speler dat zelf heeft opgegeven)
-			 // - de nieuwe balance
-			 // - de gamestate, ter verklaring van de nieuwe balans
+									 // nu heeft de server alles uitgerekend, nu nog  aan de gebruiker laten weten wat er gebeurd is.
+									 // we sturen 
+									 // - de kaarten op tafel van speler en van de dealer, 
+									 // - de inzet(hoewel de speler dat zelf heeft opgegeven)
+									 // - de nieuwe balance
+									 // - de gamestate, ter verklaring van de nieuwe balans
         
 	    	Balance balance = chipsService.findBalance(username);
 					
 			gameInfo.add(game.getPlayer().getKaartenOpHand());  // kaarten op hand speler
-			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart
+			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart, tenzij spel al is afgelopen
 			gameInfo.add(game.getInzet());// wat ahd de speler ingezet
 			gameInfo.add(game.getGameState());//nodig om volgende moves te bepalen
 			gameInfo.add(balance);  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
@@ -128,21 +124,57 @@ public class BlackJackService {
 			
 		}
 		
-		public List<Object> vervolgZet(Game game,Move move, long inzet){
+		public List<Object> makeMove(long gameId,Move move, long inzet){
 			
-			Chips chips = chipsRepository.findByUsername(game.getPlayer().getUser().getUsername()).orElse(null);
+		    System.out.println("nu gaan we de game opsnorren");
+		    Game game = this.gameRepository.getGameById(gameId);
+		    System.out.println("de gevonden game is"+ game);
+		    System.out.println("nu gaan we de dealer opsnorren");
+		    System.out.println("de dealer is"+ game.getDealer());
+		    if (game == null) {
+		        throw new IllegalArgumentException("Er is geen game gevonden met deze id: " + gameId);
+		    }
+			
+			
+			String username = game.getPlayer().getUser().getUsername();
+			Chips chips = chipsRepository.findByUsername(username).orElse(null);
 			List<Object> gameInfo = new ArrayList<>();
-			//check of een geldige move is gekozen
+			List<Card> dealerCards = new ArrayList<>();
+			
+			//check of een geldige move is gekozen, zo ja, voer uit en retrun de nieuwe gamestate
 			if (MoveChecker.showMoves(game.getGameState()).contains(move)) {
-					game.setGameState( MoveChecker.checkAndHandleMove(move,game) );
-					/*
-					 * //• Bust: speler krijgt niets terug • Lost: speler krijgt niets terug •
-					 * Surrendered: speler krijgt 0.5× zijn inleg terug • Push: speler krijgt 1×
-					 * zijn inleg terug • Blackjack: speler krijgt 1.5× zijn inleg terug • Won:
-					 * speler krijgt 2× zijn inleg terug
-					 */
+					try {
+						game.setGameState( MoveChecker.checkAndHandleMove(move,game) );
+						chips.withdraw(inzet);    // als de move is toegestaan, inzet innemen
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}	
 			}
+			
+			if (game.getGameState() == GameState.blackjack){
+				chips.deposit((long)(2.5*inzet)); //speler krijgt inzet terug + 1,5 inzet winst totaal 2,5
+				dealerCards = game.getDealer().getKaartenOpHand();
+			}
+			else if (game.getGameState() == GameState.won) {
+				chips.deposit((long)(2.5*inzet)); //speler krijgt inzet terug + 1,5 inzet winst totaal 2,5
+				dealerCards = game.getDealer().getKaartenOpHand();
+			}
+			else if (game.getGameState() == GameState.bust) {
+				dealerCards = game.getDealer().getKaartenOpHand(); //speler krijgt geen chips, maar mag wel de dealercards zien
+			}
+			else if (game.getGameState() == GameState.playing) {
+				
+				dealerCards.add( game.getDealer().getFirstDealerCard());  // als nog steeds gewoon playing krijgen we de dealerkaarten nog niet allebei te zien
+				
+				Card blindeKaart = new Card(Kleur.achterkant,Waarde.achterkant);
+				dealerCards.add(blindeKaart);
+			}
+			
+			
 			Balance balance = chipsService.findBalance(username);
+			
+			
 			
 			gameInfo.add(game.getPlayer().getKaartenOpHand());  // kaarten op hand speler
 			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart

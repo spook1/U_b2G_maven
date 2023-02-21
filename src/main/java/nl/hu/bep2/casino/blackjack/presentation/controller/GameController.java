@@ -16,17 +16,17 @@ import org.springframework.web.server.ResponseStatusException;
 import nl.hu.bep2.casino.blackjack.application.BlackJackService;
 import nl.hu.bep2.casino.blackjack.domain.Game;
 import nl.hu.bep2.casino.blackjack.presentation.dto.GameInfoDto;
-
+import nl.hu.bep2.casino.blackjack.presentation.dto.MakeMoveDto;
 import nl.hu.bep2.casino.chips.domain.exception.NegativeNumberException;
 
 import nl.hu.bep2.casino.security.domain.UserProfile;
 
 @RestController
 @RequestMapping("/game")
-public class StartGameController {
+public class GameController {
 	private final BlackJackService service;
 																			// StartGameService injecteren, en service noemen
-	public StartGameController(BlackJackService service) {
+	public GameController(BlackJackService service) {
 		this.service =service;
 	}
 																			// endpoint start start methode startGame en haalt van endpointDto (string, int, long) op 
@@ -39,6 +39,19 @@ public class StartGameController {
 			 	
 			 	gameInfo = this.service.start(profile.getUsername(), gameInfoDto.numberOfDecks,gameInfoDto.amount);
 	            return gameInfo;
+	        } catch (NegativeNumberException exception) {
+	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
+	        }
+	}
+	
+	@PostMapping("/makemove")
+	public List<Object> makeMove(Authentication authentication, @Validated @RequestBody MakeMoveDto makeMoveDto){
+		
+		 try {
+			 	List<Object> moveInfo = new ArrayList<>();
+			 	System.out.println("makeMoveDto =" + makeMoveDto);
+			 	moveInfo = this.service.makeMove(makeMoveDto.gameId, makeMoveDto.move,makeMoveDto.amount);
+	            return moveInfo;
 	        } catch (NegativeNumberException exception) {
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
 	        }

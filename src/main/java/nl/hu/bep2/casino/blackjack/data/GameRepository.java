@@ -11,7 +11,7 @@ import nl.hu.bep2.casino.security.domain.User;
 
 public interface GameRepository  extends JpaRepository<Game, Long>{
 	Game findByPlayer(Player player);
-	Optional<Game> findById(Long id);
+	Game getGameById(Long id);
 	
 	List<Game> findAllByPlayerUser(User user);
 }
