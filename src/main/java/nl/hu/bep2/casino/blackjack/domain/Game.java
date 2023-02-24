@@ -80,10 +80,10 @@ public class Game {
 							// het spel start altijd met een bet van amount
 	public GameState start() {
 		
-			this.player.addCardToHand(this.gameCards.getCard());
-			this.player.addCardToHand(this.gameCards.getCard());
-			this.dealer.addCardToHand(this.gameCards.getCard());
-			this.dealer.addCardToHand(this.gameCards.getCard());
+			this.player.addCardToHand(this.gameCards.pullCard());
+			this.player.addCardToHand(this.gameCards.pullCard());
+			this.dealer.addCardToHand(this.gameCards.pullCard());
+			this.dealer.addCardToHand(this.gameCards.pullCard());
 			
 			this.gameState=GameState.playing;
 			

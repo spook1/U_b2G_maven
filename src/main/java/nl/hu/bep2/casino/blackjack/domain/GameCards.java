@@ -18,10 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.FetchType;
 import javax.persistence.Entity;
 
-@JsonIgnoreProperties(ignoreUnknown=true)  // dit heb ik moeten toevoegen omdat ik steeds de foutmelding kreeg dat er een card entity in de gameCrards zat
-											// dat was zo, onverklaarbaar. Na "project clean in eclipse is nog steeds de card entity in de JSON< nu helmaal achteraan..
-											//er was een verdwaalde import van Card entity blijven hangen in de converter, van eerdere pogingen, maar na verewijderen bleef het probleem..
-											// nu is het probleem dus weg doordat ik de onbekende properties in de json negeer.
 public class GameCards implements Serializable {
 
 	private List<Card> gameDeck = new ArrayList<>();  
@@ -66,11 +62,11 @@ public class GameCards implements Serializable {
 		
 	}
 
-	public  List<Card> getGameCards(){
+	public  List<Card> getGameDeck(){
 		return this.gameDeck;
 	}
 
-	public Card getCard() {
+	public Card pullCard() {
 		
 		Card card = null; ;
 		

@@ -32,8 +32,8 @@ public class TestController {
 		
 		Map<Integer,Hand> map = new HashMap<>();
 		
-		playerHand.addCardToHand(gameCards.getCard());
-		playerHand.addCardToHand(gameCards.getCard());
+		playerHand.addCardToHand(gameCards.pullCard());
+		playerHand.addCardToHand(gameCards.pullCard());
 		 
 		score = playerHand.getHandScore();
 		map.put( score, playerHand);

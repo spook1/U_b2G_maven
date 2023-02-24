@@ -49,7 +49,7 @@ public class MoveChecker {
 					}
 				  //neem één kaart uit de Gamecards (deck van deze game) en voeg die toe aan de spelerhand)
 				  System.out.println("we gaan nu de speler een kaart egven");
-				  player.addCardToHand(game.getGameCards().getCard());
+				  player.addCardToHand(game.getGameCards().pullCard());
 				  System.out.println("de spelr heeft de kaart");
 				 
 				  if (player.getHandScore() == 21) {
