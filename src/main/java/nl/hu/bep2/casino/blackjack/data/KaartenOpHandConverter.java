@@ -27,9 +27,6 @@ public class KaartenOpHandConverter implements AttributeConverter<List<Card>, St
 	    String kaartenOpHandJson = null;
 	    try {
 	    	kaartenOpHandJson = mapper.writeValueAsString(kaartenOpHand);
-	    	System.out.println("========================================== ");
-	    	System.out.println("========================================== ");
-	        System.out.println("kaartenOpHandConverter maakt deze JSON "+kaartenOpHandJson);
 	    } catch (final JsonProcessingException e) {
 	        //logger.error("JSON writing error", e);
 	    }

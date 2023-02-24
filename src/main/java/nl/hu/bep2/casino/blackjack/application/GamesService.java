@@ -1,7 +1,9 @@
 package nl.hu.bep2.casino.blackjack.application;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ public class GamesService {
 	@Autowired
 	private PlayerService playerService;
 	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private ChipsService chipsService;
+	
 	
 	public GamesService(){
 	}
@@ -44,22 +52,25 @@ public class GamesService {
 	}
 	
 
-	public List<Game> GetGamesByUsername(String username) {
-		//User user = userService.loadUserByUsername(username);
-		//List<Game> gameList = gameRepository.findAllByPlayerUser(user);
-		//OMDAT BOVENSTAANDE AANPAK EEN NESTED NULL ERROR GEEFT, EN OP EEN OF ANDERE MANIER GAME NIET GEVONDEN KAN WORDEN ONDERSTAANDE WORKAAROUND GEVONDEN
+	public List<Object> ShowGamesByUsername(String username) {
 		  
-		List<Game> gameList = new ArrayList<>(); 
+		  List<Object> gameList = new ArrayList<>();
 		  List<Player> players = this.playerService.GetPlayerByUsername(username);
+		  User user = userService.loadUserByUsername(username);
 		  
-		  for ( Player p : players) { Game game =
-		  this.gameRepository.findById(p.getGame().getId()).orElse(null);
-		  gameList.add(game); }
-		 
+		  for (Player p : players) {
+		        Game game = this.gameRepository.findById(p.getGame().getId()).orElse(null);
+		        Map<String, Object> gameInfo = new HashMap<>();
+		        gameInfo.put("username", username);
+		        gameInfo.put("Uitslag", game.getGameState());
+		        gameInfo.put("Inzet", game.getInzet());
+		        gameInfo.put("Totaal aantal chips", chipsService.findChipsByUsername(username).getAmount());
+		        gameInfo.put("Spelers kaarten", game.getPlayer().getKaartenOpHand());
+		        gameInfo.put("Dealers kaarten", game.getDealer().getKaartenOpHand());
+		        gameInfo.put("GameId", game.getId());
+		        gameList.add(gameInfo);
+		    } 
 		return gameList;
-		
-		
-		
 	}
 	
 	   

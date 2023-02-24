@@ -1,6 +1,7 @@
 package nl.hu.bep2.casino.blackjack.presentation.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import nl.hu.bep2.casino.blackjack.application.BlackJackService;
+import nl.hu.bep2.casino.blackjack.application.MovesService;
 import nl.hu.bep2.casino.blackjack.domain.Game;
 import nl.hu.bep2.casino.blackjack.domain.GameState;
 import nl.hu.bep2.casino.blackjack.domain.Move;
@@ -25,9 +27,9 @@ import nl.hu.bep2.casino.security.domain.UserProfile;
 @RequestMapping("/game")
 public class ShowMovesController {
 
-	private final BlackJackService service;
+	private final MovesService service;
 	// StartGameService injecteren, en service noemen
-	public ShowMovesController(BlackJackService service) {
+	public ShowMovesController(MovesService service) {
 		this.service =service;
 	}
 	
@@ -36,14 +38,17 @@ public class ShowMovesController {
 	public List<Move> showMoves(Authentication authentication, @Validated @RequestBody GameState gameState){
 	
 		 try {
-			 	List<Move> moves = new ArrayList<>();
-			 	moves = this.service.showMoves(gameState);
-			 	
-	            return moves;
+			 List<Move> moves = this.service.showMoves(gameState);
+			 if (moves == null) {
 	            
-	        } catch (NegativeNumberException exception) {
+	            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Er zijn geen geldige moves meer voor dit spel, de gamestate is : " + gameState);
+	            //return Collections.emptyList();
+	            }
+		        return moves;
+		 }
+		 catch (NegativeNumberException exception) {
 	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
-	        }
+	       }
 	}
 		
 }

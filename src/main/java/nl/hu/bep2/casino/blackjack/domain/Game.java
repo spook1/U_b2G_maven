@@ -85,7 +85,7 @@ public class Game {
 			this.dealer.addCardToHand(this.gameCards.pullCard());
 			this.dealer.addCardToHand(this.gameCards.pullCard());
 			
-			this.gameState=GameState.playing;
+			//this.gameState=GameState.playing;
 			
 			return this.gameState;
 	}
@@ -129,8 +129,6 @@ public class Game {
 
 
 	public GameCards getGameCards() {
-		
-		System.out.println("getGameCards haalt GameCards : "+ this.gameCards);
 		return this.gameCards;
 	}
 

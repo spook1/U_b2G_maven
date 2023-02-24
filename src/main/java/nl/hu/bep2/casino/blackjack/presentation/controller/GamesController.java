@@ -1,7 +1,9 @@
 package nl.hu.bep2.casino.blackjack.presentation.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -38,14 +40,14 @@ public class GamesController {
 	
 	@PostMapping("/showgames")
 	@ResponseBody
-	public List<Game> getGames(Authentication authentication, UserService userService){
+	public List<Object> showGames(Authentication authentication, UserService userService){
 		UserProfile profile = (UserProfile) authentication.getPrincipal();
 		
 	 try {
-		 	List<Game> gameList = new ArrayList<>();
+		 	List<Object> gameList = new ArrayList<>();
 		 	String username = profile.getUsername();
  	
-			gameList = this.service.GetGamesByUsername(username);
+			gameList = this.service.ShowGamesByUsername(username);
 			
 	        return gameList;
 	            

@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.lang.Collections;
 import nl.hu.bep2.casino.blackjack.data.GameRepository;
 import nl.hu.bep2.casino.blackjack.domain.Card;
 import nl.hu.bep2.casino.blackjack.domain.Game;
@@ -107,57 +108,66 @@ public class BlackJackService {
         
 	    	Balance balance = chipsService.findBalance(username);
 					
-			gameInfo.add(game.getPlayer().getKaartenOpHand());  // kaarten op hand speler
+	    	gameInfo.add(game.getId());  // kaarten op hand speler
+	    	gameInfo.add(game.getPlayer().getKaartenOpHand());  // kaarten op hand speler
 			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart, tenzij spel al is afgelopen
 			gameInfo.add(game.getInzet());// wat ahd de speler ingezet
 			gameInfo.add(game.getGameState());//nodig om volgende moves te bepalen
-			gameInfo.add(balance);  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
+			gameInfo.add(balance.getChips());  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
 			
 			return gameInfo;
 		}
 		
-		public List<Move> showMoves(GameState gameState){
-			
-			List<Move> moves = new ArrayList<>();
-			moves = MoveChecker.showMoves(gameState);
-			return moves;
-			
-		}
+		
 		
 		public List<Object> makeMove(long gameId,Move move, long inzet){
 			
 		    System.out.println("nu gaan we de game opsnorren");
 		    Game game = this.gameRepository.getGameById(gameId);
-		    System.out.println("de gevonden game is"+ game);
-		    System.out.println("nu gaan we de dealer opsnorren");
-		    System.out.println("de dealer is"+ game.getDealer());
-		    if (game == null) {
+		    if ( game==null) {
 		        throw new IllegalArgumentException("Er is geen game gevonden met deze id: " + gameId);
 		    }
+		    //System.out.println("de dealer is"+ game.getDealer());
 			
 			
-			String username = game.getPlayer().getUser().getUsername();
+			String username=null;
+			try {
+				username = game.getPlayer().getUser().getUsername();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			Chips chips = chipsRepository.findByUsername(username).orElse(null);
 			List<Object> gameInfo = new ArrayList<>();
 			List<Card> dealerCards = new ArrayList<>();
 			
 			//check of een geldige move is gekozen, zo ja, voer uit en retrun de nieuwe gamestate
 			if (MoveChecker.showMoves(game.getGameState()).contains(move)) {
-					try {
-						game.setGameState( MoveChecker.checkAndHandleMove(move,game) );
-						chips.withdraw(inzet);    // als de move is toegestaan, inzet innemen
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}	
+				try {
+					game.setGameState( MoveChecker.checkAndHandleMove(move,game) );
+					chips.withdraw(inzet);    // als de move is toegestaan, inzet innemen
+					if (move == Move.doubleDown) {
+						chips.withdraw(inzet); // bij doubldedown nog een keer de inzet innen
+					}
+					else if (move == Move.surrender) {
+						chips.deposit((long) Math.round(inzet/2));
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 			}
 			
 			if (game.getGameState() == GameState.blackjack){
-				chips.deposit((long)(2.5*inzet)); //speler krijgt inzet terug + 1,5 inzet winst totaal 2,5
+				chips.deposit((long)(1.5*inzet)); //speler krijgt 1,5 x inzet terug 
 				dealerCards = game.getDealer().getKaartenOpHand();
 			}
 			else if (game.getGameState() == GameState.won) {
-				chips.deposit((long)(2.5*inzet)); //speler krijgt inzet terug + 1,5 inzet winst totaal 2,5
+				chips.deposit((long)(2*inzet)); //speler krijgt 2x inzet terug 
+				dealerCards = game.getDealer().getKaartenOpHand();
+			}
+			else if (game.getGameState() == GameState.lost) {
+											//speler krijgt niks terug 
 				dealerCards = game.getDealer().getKaartenOpHand();
 			}
 			else if (game.getGameState() == GameState.bust) {
@@ -165,7 +175,7 @@ public class BlackJackService {
 			}
 			else if (game.getGameState() == GameState.playing) {
 				
-				dealerCards.add( game.getDealer().getFirstDealerCard());  // als nog steeds gewoon playing krijgen we de dealerkaarten nog niet allebei te zien
+				dealerCards.add(game.getDealer().getFirstDealerCard());  // als nog steeds gewoon playing krijgen we de dealerkaarten nog niet allebei te zien
 				
 				Card blindeKaart = new Card(Kleur.achterkant,Waarde.achterkant);
 				dealerCards.add(blindeKaart);

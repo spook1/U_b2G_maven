@@ -34,27 +34,28 @@ public class GameController {
 	@PostMapping("/start")
 	public List<Object> startGame(Authentication authentication, @Validated @RequestBody GameInfoDto gameInfoDto){
 		 UserProfile profile = (UserProfile) authentication.getPrincipal();
+		 List<Object> gameInfo = new ArrayList<>();
 		 try {
-			 	List<Object> gameInfo = new ArrayList<>();
-			 	
-			 	gameInfo = this.service.start(profile.getUsername(), gameInfoDto.numberOfDecks,gameInfoDto.amount);
-	            return gameInfo;
-	        } catch (NegativeNumberException exception) {
-	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
-	        }
+		 	gameInfo = this.service.start(profile.getUsername(), gameInfoDto.numberOfDecks,gameInfoDto.amount);
+            return gameInfo;
+        } catch (NegativeNumberException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
+        }
 	}
 	
 	@PostMapping("/makemove")
 	public List<Object> makeMove(Authentication authentication, @Validated @RequestBody MakeMoveDto makeMoveDto){
-		
-		 try {
-			 	List<Object> moveInfo = new ArrayList<>();
-			 	System.out.println("makeMoveDto =" + makeMoveDto);
-			 	moveInfo = this.service.makeMove(makeMoveDto.gameId, makeMoveDto.move,makeMoveDto.amount);
-	            return moveInfo;
-	        } catch (NegativeNumberException exception) {
-	            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage());
-	        }
+	 	List<Object> moveInfo = new ArrayList<>();
+	 	System.out.println("makeMoveDto =" + makeMoveDto);
+
+		try {
+		 	moveInfo = this.service.makeMove(makeMoveDto.gameId, makeMoveDto.move,makeMoveDto.amount);	 
+		}
+		catch (RuntimeException ex) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage()); 
+		}
+		return moveInfo;
+	        
 	}
 	
 	
