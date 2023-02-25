@@ -32,7 +32,8 @@ public class ShowMovesController {
 	public ShowMovesController(MovesService service) {
 		this.service =service;
 	}
-	
+	// deze controller biedt de frontend de koeglijkheid om de speler een lijstje met mogelijke moves te toenen waaruit gekzoen kan worden. 
+	//is technisch gezien niet echt noodzakelijk
 	@PostMapping("/showmoves")
 	@ResponseBody
 	public List<Move> showMoves(Authentication authentication, @Validated @RequestBody GameState gameState){

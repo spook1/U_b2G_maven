@@ -128,8 +128,7 @@ public class BlackJackService {
 		        throw new IllegalArgumentException("Er is geen game gevonden met deze id: " + gameId);
 		    }
 		    //System.out.println("de dealer is"+ game.getDealer());
-			
-			
+				
 			String username=null;
 			try {
 				username = game.getPlayer().getUser().getUsername();
@@ -145,7 +144,7 @@ public class BlackJackService {
 			if (MoveChecker.showMoves(game.getGameState()).contains(move)) {
 				try {
 					game.setGameState( MoveChecker.checkAndHandleMove(move,game) );
-					chips.withdraw(inzet);    // als de move is toegestaan, inzet innemen
+				
 					if (move == Move.doubleDown) {
 						chips.withdraw(inzet); // bij doubldedown nog een keer de inzet innen
 					}
@@ -170,6 +169,10 @@ public class BlackJackService {
 											//speler krijgt niks terug 
 				dealerCards = game.getDealer().getKaartenOpHand();
 			}
+			else if (game.getGameState() == GameState.push) {
+				chips.deposit((long)(inzet)); //speler krijgt  inzet terug 
+				dealerCards = game.getDealer().getKaartenOpHand();
+			}
 			else if (game.getGameState() == GameState.bust) {
 				dealerCards = game.getDealer().getKaartenOpHand(); //speler krijgt geen chips, maar mag wel de dealercards zien
 			}
@@ -190,7 +193,7 @@ public class BlackJackService {
 			gameInfo.add(dealerCards); //dealer kaarten een open en een dichte kaart
 			gameInfo.add(game.getInzet());// wat ahd de speler ingezet
 			gameInfo.add(game.getGameState());//nodig om volgende moves te bepalen
-			gameInfo.add(balance);  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
+			gameInfo.add(balance.getChips());  //  chips, naam van de speler, laate maal geupdated, en huidge aantal chips
 			
 			return gameInfo;
 		

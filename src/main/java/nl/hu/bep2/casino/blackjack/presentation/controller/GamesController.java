@@ -1,6 +1,7 @@
 package nl.hu.bep2.casino.blackjack.presentation.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,11 @@ public class GamesController {
  	
 			gameList = this.service.ShowGamesByUsername(username);
 			
+			if (gameList == null) {
+	            
+	            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Er zijn geen geldige games voor deze user");
+	            
+	            }
 	        return gameList;
 	            
 	        } catch (NegativeNumberException exception) {
